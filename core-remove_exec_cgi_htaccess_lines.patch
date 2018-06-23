@@ -1,0 +1,57 @@
+From 705ed9a88d23d5612929045868a1ef93b31a2545 Mon Sep 17 00:00:00 2001
+From: gorazdze <gorazd@dinamico.si>
+Date: Mon, 10 Oct 2016 21:13:32 +0200
+Subject: [PATCH] Remove -ExecCGI from htaccessLines.
+
+---
+ core/lib/Drupal/Component/PhpStorage/FileStorage.php     | 2 +-
+ core/tests/Drupal/KernelTests/Core/File/HtaccessTest.php | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/core/lib/Drupal/Component/PhpStorage/FileStorage.php b/core/lib/Drupal/Component/PhpStorage/FileStorage.php
+index 1e6a2b3..b691b90 100644
+--- a/core/lib/Drupal/Component/PhpStorage/FileStorage.php
++++ b/core/lib/Drupal/Component/PhpStorage/FileStorage.php
+@@ -74,7 +74,7 @@ public function save($name, $code) {
+   public static function htaccessLines($private = TRUE) {
+     $lines = <<<EOF
+ # Turn off all options we don't need.
+-Options -Indexes -ExecCGI -Includes -MultiViews
++Options -Indexes -Includes -MultiViews
+ 
+ # Set the catch-all handler to prevent scripts from being executed.
+ SetHandler Drupal_Security_Do_Not_Remove_See_SA_2006_006
+diff --git a/core/tests/Drupal/KernelTests/Core/File/HtaccessTest.php b/core/tests/Drupal/KernelTests/Core/File/HtaccessTest.php
+index 0ef5078..d5b9b92 100644
+--- a/core/tests/Drupal/KernelTests/Core/File/HtaccessTest.php
++++ b/core/tests/Drupal/KernelTests/Core/File/HtaccessTest.php
+@@ -36,7 +36,7 @@ function testHtaccessSave() {
+     $this->assertTrue(strpos($content, "SetHandler Drupal_Security_Do_Not_Remove_See_SA_2006_006") !== FALSE);
+     $this->assertFalse(strpos($content, "Require all denied") !== FALSE);
+     $this->assertFalse(strpos($content, "Deny from all") !== FALSE);
+-    $this->assertTrue(strpos($content, "Options -Indexes -ExecCGI -Includes -MultiViews") !== FALSE);
++    $this->assertTrue(strpos($content, "Options -Indexes -Includes -MultiViews") !== FALSE);
+     $this->assertTrue(strpos($content, "SetHandler Drupal_Security_Do_Not_Remove_See_SA_2013_003") !== FALSE);
+     $this->assertFilePermissions($public . '/.htaccess', 0444);
+ 
+@@ -49,7 +49,7 @@ function testHtaccessSave() {
+     $this->assertTrue(strpos($content, "SetHandler Drupal_Security_Do_Not_Remove_See_SA_2006_006") !== FALSE);
+     $this->assertTrue(strpos($content, "Require all denied") !== FALSE);
+     $this->assertTrue(strpos($content, "Deny from all") !== FALSE);
+-    $this->assertTrue(strpos($content, "Options -Indexes -ExecCGI -Includes -MultiViews") !== FALSE);
++    $this->assertTrue(strpos($content, "Options -Indexes -Includes -MultiViews") !== FALSE);
+     $this->assertTrue(strpos($content, "SetHandler Drupal_Security_Do_Not_Remove_See_SA_2013_003") !== FALSE);
+     $this->assertFilePermissions($private . '/.htaccess', 0444);
+ 
+@@ -62,7 +62,7 @@ function testHtaccessSave() {
+     $this->assertTrue(strpos($content, "SetHandler Drupal_Security_Do_Not_Remove_See_SA_2006_006") !== FALSE);
+     $this->assertTrue(strpos($content, "Require all denied") !== FALSE);
+     $this->assertTrue(strpos($content, "Deny from all") !== FALSE);
+-    $this->assertTrue(strpos($content, "Options -Indexes -ExecCGI -Includes -MultiViews") !== FALSE);
++    $this->assertTrue(strpos($content, "Options -Indexes -Includes -MultiViews") !== FALSE);
+     $this->assertTrue(strpos($content, "SetHandler Drupal_Security_Do_Not_Remove_See_SA_2013_003") !== FALSE);
+     $this->assertFilePermissions($stream . '/.htaccess', 0444);
+ 
+-- 
+2.8.4 (Apple Git-73)
+

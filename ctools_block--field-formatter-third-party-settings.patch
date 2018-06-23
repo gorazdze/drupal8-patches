@@ -1,0 +1,49 @@
+diff --git a/modules/ctools_block/src/Plugin/Block/EntityField.php b/modules/ctools_block/src/Plugin/Block/EntityField.php
+index 1120f09..a3dc5a0 100644
+--- a/modules/ctools_block/src/Plugin/Block/EntityField.php
++++ b/modules/ctools_block/src/Plugin/Block/EntityField.php
+@@ -231,6 +231,11 @@ class EntityField extends BlockBase implements ContextAwarePluginInterface, Cont
+       // The settings from the formatter plugin will be added in the
+       // ::formatterSettingsProcessCallback method.
+     ];
++    $form['formatter_settings_wrapper']['formatter_settings']['third_party_settings'] = [
++      '#tree' => TRUE,
++      // The settings from the formatter plugin will be added in the
++      // ::formatterSettingsProcessCallback method.
++    ];
+ 
+     return $form;
+   }
+@@ -262,6 +267,19 @@ class EntityField extends BlockBase implements ContextAwarePluginInterface, Cont
+     // the formatter settings in our AJAX callback.
+     $complete_form['#formatter_array_parents'] = $element['#array_parents'];
+ 
++    // Invoke hook_field_formatter_third_party_settings_form(), keying resulting
++    // subforms by module name.
++    // @see \Drupal\field_ui\Form::EntityViewDisplayEditForm().
++    foreach (\Drupal::moduleHandler()->getImplementations('ctools_block_field_formatter_third_party_settings_form') as $module) {
++      $element['formatter_settings_wrapper']['third_party_settings'][$module] = \Drupal::moduleHandler()->invoke($module, 'ctools_block_field_formatter_third_party_settings_form', array(
++        $formatter,
++        $this->fieldDefinition,
++        '', //$this->entity->getMode(),
++        $complete_form,
++        $form_state,
++      ));
++    }
++
+     return $element;
+   }
+ 
+@@ -282,6 +300,12 @@ class EntityField extends BlockBase implements ContextAwarePluginInterface, Cont
+     // @todo Remove this manual cast after https://www.drupal.org/node/2635236
+     //   is resolved.
+     $this->configuration['formatter']['settings'] = (array) $form_state->getValue('formatter_settings');
++
++    $formatter_settings_wrapper = (array) $form_state->getValue('formatter_settings_wrapper');
++    if (isset($formatter_settings_wrapper['third_party_settings'])) {
++      $this->configuration['formatter']['third_party_settings'] = $formatter_settings_wrapper['third_party_settings'];
++    }
++
+   }
+ 
+   /**

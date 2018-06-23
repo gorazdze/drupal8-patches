@@ -1,0 +1,33 @@
+From d2c68c81c9038e0b2a8edd093384b00806097215 Mon Sep 17 00:00:00 2001
+From: gorazdze <gorazd@dinamico.si>
+Date: Fri, 27 Oct 2017 10:37:03 +0200
+Subject: [PATCH] Add tokens for default Commerce Store.
+
+---
+ src/Plugin/Filter/TokenFilter.php | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/src/Plugin/Filter/TokenFilter.php b/src/Plugin/Filter/TokenFilter.php
+index 49f1209..e781b0e 100644
+--- a/src/Plugin/Filter/TokenFilter.php
++++ b/src/Plugin/Filter/TokenFilter.php
+@@ -111,6 +111,16 @@ class TokenFilter extends FilterBase implements ContainerFactoryPluginInterface
+       $data[$token_type] = $entity;
+     }
+ 
++    // Add tokens for default Commerce Store.
++    $default_store_uuid = \Drupal::config('commerce_store.settings')->get('default_store');
++    if (isset($default_store_uuid)) {
++      $entity = \Drupal::service('entity.repository')->loadEntityByUuid('commerce_store', $default_store_uuid);
++      if (isset($entity)) {
++        $token_type = $this->tokenEntityMapper->getTokenTypeForEntityType($entity->getEntityTypeId());
++        $data[$token_type] = $entity;
++      }
++    }
++
+     return new FilterProcessResult($this->token->replace($text, $data), [], ['langcode' => $langcode]);
+   }
+ 
+-- 
+2.14.1
+

@@ -1,0 +1,96 @@
+From fa2145d3b22ea5e2d624677c5d6c9213d389dc70 Mon Sep 17 00:00:00 2001
+From: gorazdze <gorazd@dinamico.si>
+Date: Sat, 19 Nov 2016 17:00:56 +0100
+Subject: [PATCH] Classes for Panels Blocks.
+
+---
+ block_class.module | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+
+diff --git a/block_class.module b/block_class.module
+index c43fde2..0a9bbca 100644
+--- a/block_class.module
++++ b/block_class.module
+@@ -29,14 +29,41 @@ function block_class_form_block_form_alter(&$form, \Drupal\Core\Form\FormStateIn
+ }
+ 
+ /**
++ * Implements hook_form_FORM_ID_alter().
++ */
++function block_class_form_panels_edit_block_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
++  if (\Drupal::currentUser()->hasPermission('administer block classes')) {
++
++    $form_object = $form_state->getFormObject();
++    $variant_plugin = $form_object->getVariantPlugin();
++    $block = $form_object->getBlock();
++
++    // This will automatically be saved in the third party settings.
++    $form['third_party_settings']['#tree'] = TRUE;
++    $form['third_party_settings']['block_class']['classes'] = array(
++      '#type' => 'textfield',
++      '#title' => t('CSS class(es)'),
++      '#description' => t('Customize the styling of this block by adding CSS classes. Separate multiple classes by spaces.'),
++      '#default_value' => $block->getConfiguration()['third_party_settings']['block_class']['classes'],
++    );
++  }
++}
++
++/**
+  * Implements hook_preprocess_HOOK().
+  */
+ function block_class_preprocess_block(&$variables) {
+   // Blocks coming from page manager widget does not have id.
+   if (!empty($variables['elements']['#id'])) {
+     $block = Block::load($variables['elements']['#id']);
++
+     if ($classes = $block->getThirdPartySetting('block_class', 'classes')) {
+       $variables['attributes']['class'][] = $classes;
+     }
+   }
++  else {
++    if ($classes = $variables['configuration']['third_party_settings']['block_class']['classes']) {
++      $variables['attributes']['class'][] = $classes;
++    }
++  }
+ }
+-- 
+2.9.3 (Apple Git-75)
+
+From aa82c57e27dc382842500ca69a893d7049037dc9 Mon Sep 17 00:00:00 2001
+From: gorazdze <gorazd@dinamico.si>
+Date: Sun, 20 Nov 2016 19:02:28 +0100
+Subject: [PATCH] Fix clasess for panels blocks.
+
+---
+ block_class.module | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/block_class.module b/block_class.module
+index 0a9bbca..49812a7 100644
+--- a/block_class.module
++++ b/block_class.module
+@@ -53,17 +53,15 @@ function block_class_form_panels_edit_block_form_alter(&$form, \Drupal\Core\Form
+  * Implements hook_preprocess_HOOK().
+  */
+ function block_class_preprocess_block(&$variables) {
++  if (isset($variables['configuration']['third_party_settings']['block_class']['classes'])) {
++    $variables['attributes']['class'][] = $variables['configuration']['third_party_settings']['block_class']['classes'];
++  }
+   // Blocks coming from page manager widget does not have id.
+-  if (!empty($variables['elements']['#id'])) {
++  elseif (!empty($variables['elements']['#id'])) {
+     $block = Block::load($variables['elements']['#id']);
+ 
+     if ($classes = $block->getThirdPartySetting('block_class', 'classes')) {
+       $variables['attributes']['class'][] = $classes;
+     }
+   }
+-  else {
+-    if ($classes = $variables['configuration']['third_party_settings']['block_class']['classes']) {
+-      $variables['attributes']['class'][] = $classes;
+-    }
+-  }
+ }
+-- 
+2.9.3 (Apple Git-75)
+

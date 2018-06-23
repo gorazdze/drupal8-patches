@@ -1,0 +1,25 @@
+From 024ba0c5f4a4cf371c8e17d1ae74d6966c90bf7d Mon Sep 17 00:00:00 2001
+From: gorazdze <gorazd@dinamico.si>
+Date: Fri, 14 Oct 2016 01:18:29 +0200
+Subject: [PATCH] Change weight of Total line item.
+
+---
+ uc_order/src/Plugin/Ubercart/LineItem/Total.php | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/uc_order/src/Plugin/Ubercart/LineItem/Total.php b/uc_order/src/Plugin/Ubercart/LineItem/Total.php
+index 4895fb5..63e9881 100644
+--- a/uc_order/src/Plugin/Ubercart/LineItem/Total.php
++++ b/uc_order/src/Plugin/Ubercart/LineItem/Total.php
+@@ -11,7 +11,7 @@ use Drupal\uc_order\OrderInterface;
+  * @UbercartLineItem(
+  *   id = "total",
+  *   title = @Translation("Total"),
+- *   weight = 0,
++ *   weight = 99,
+  *   display_only = TRUE
+  * )
+  */
+-- 
+2.8.4 (Apple Git-73)
+

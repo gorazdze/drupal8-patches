@@ -1,0 +1,115 @@
+diff --git a/panels_ipe/src/Plugin/DisplayBuilder/InPlaceEditorDisplayBuilder.php b/panels_ipe/src/Plugin/DisplayBuilder/InPlaceEditorDisplayBuilder.php
+index 9399e6e..da23f68 100644
+--- a/panels_ipe/src/Plugin/DisplayBuilder/InPlaceEditorDisplayBuilder.php
++++ b/panels_ipe/src/Plugin/DisplayBuilder/InPlaceEditorDisplayBuilder.php
+@@ -4,6 +4,7 @@ namespace Drupal\panels_ipe\Plugin\DisplayBuilder;
+
+ use Drupal\Component\Utility\Html;
+ use Drupal\Component\Utility\NestedArray;
++use Drupal\Core\Extension\ModuleHandlerInterface;
+ use Drupal\Core\Plugin\Context\ContextHandlerInterface;
+ use Drupal\Core\Session\AccountInterface;
+ use Drupal\layout_plugin\Plugin\Layout\LayoutInterface;
+@@ -52,8 +53,8 @@ class InPlaceEditorDisplayBuilder extends StandardDisplayBuilder {
+    * @param \Drupal\panels\Storage\PanelsStorageManagerInterface
+    *   The Panels storage manager.
+    */
+-  public function __construct(array $configuration, $plugin_id, $plugin_definition, ContextHandlerInterface $context_handler, AccountInterface $account, SharedTempStoreFactory $temp_store_factory, PanelsStorageManagerInterface $panels_storage) {
+-    parent::__construct($configuration, $plugin_id, $plugin_definition, $context_handler, $account);
++  public function __construct(array $configuration, $plugin_id, $plugin_definition, ContextHandlerInterface $context_handler, AccountInterface $account, ModuleHandlerInterface $module_handler, SharedTempStoreFactory $temp_store_factory, PanelsStorageManagerInterface $panels_storage) {
++    parent::__construct($configuration, $plugin_id, $plugin_definition, $context_handler, $account, $module_handler);
+     $this->tempStore = $temp_store_factory->get('panels_ipe');
+     $this->panelsStorage = $panels_storage;
+   }
+@@ -68,6 +69,7 @@ class InPlaceEditorDisplayBuilder extends StandardDisplayBuilder {
+       $plugin_definition,
+       $container->get('context.handler'),
+       $container->get('current_user'),
++      $container->get('module_handler'),
+       $container->get('user.shared_tempstore'),
+       $container->get('panels.storage_manager')
+     );
+diff --git a/src/Plugin/DisplayBuilder/StandardDisplayBuilder.php b/src/Plugin/DisplayBuilder/StandardDisplayBuilder.php
+index 77bd983..587988c 100644
+--- a/src/Plugin/DisplayBuilder/StandardDisplayBuilder.php
++++ b/src/Plugin/DisplayBuilder/StandardDisplayBuilder.php
+@@ -3,6 +3,7 @@
+ namespace Drupal\panels\Plugin\DisplayBuilder;
+
+ use Drupal\Component\Utility\Html;
++use Drupal\Core\Extension\ModuleHandlerInterface;
+ use Drupal\Core\Cache\CacheableMetadata;
+ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+ use Drupal\Core\Plugin\Context\ContextHandlerInterface;
+@@ -43,6 +44,13 @@ class StandardDisplayBuilder extends DisplayBuilderBase implements PluginWizardI
+   protected $account;
+
+   /**
++    * The module handler.
++    *
++    * @var \Drupal\Core\Extension\ModuleHandlerInterface
++    */
++   protected $moduleHandler;
++
++  /**
+    * Constructs a new PanelsDisplayVariant.
+    *
+    * @param array $configuration
+@@ -55,12 +63,15 @@ class StandardDisplayBuilder extends DisplayBuilderBase implements PluginWizardI
+    *   The context handler.
+    * @param \Drupal\Core\Session\AccountInterface $account
+    *   The current user.
++   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
++   *   The module handler.
+    */
+-  public function __construct(array $configuration, $plugin_id, $plugin_definition, ContextHandlerInterface $context_handler, AccountInterface $account) {
++  public function __construct(array $configuration, $plugin_id, $plugin_definition, ContextHandlerInterface $context_handler, AccountInterface $account, ModuleHandlerInterface $module_handler) {
+     parent::__construct($configuration, $plugin_id, $plugin_definition);
+
+     $this->contextHandler = $context_handler;
+     $this->account = $account;
++    $this->moduleHandler = $module_handler;
+   }
+
+   /**
+@@ -72,7 +83,8 @@ class StandardDisplayBuilder extends DisplayBuilderBase implements PluginWizardI
+       $plugin_id,
+       $plugin_definition,
+       $container->get('context.handler'),
+-      $container->get('current_user')
++      $container->get('current_user'),
++      $container->get('module_handler')
+     );
+   }
+
+@@ -144,6 +156,7 @@ class StandardDisplayBuilder extends DisplayBuilderBase implements PluginWizardI
+
+           $block_render_array['content'] = $content;
+
++          $this->moduleHandler->alter(['block_view', 'block_view_' . $block->getBaseId()], $block_render_array, $block);
+           $build[$region][$block_id] = $block_render_array;
+         }
+       }
+diff --git a/tests/src/Unit/StandardDisplayBuilderTest.php b/tests/src/Unit/StandardDisplayBuilderTest.php
+index 34f79f8..f0aa044 100644
+--- a/tests/src/Unit/StandardDisplayBuilderTest.php
++++ b/tests/src/Unit/StandardDisplayBuilderTest.php
+@@ -8,6 +8,7 @@
+ namespace Drupal\Tests\panels\Unit;
+
+ use Drupal\Core\Block\BlockPluginInterface;
++use Drupal\Core\Extension\ModuleHandlerInterface;
+ use Drupal\Core\Plugin\Context\ContextHandlerInterface;
+ use Drupal\Core\Session\AccountInterface;
+ use Drupal\panels\Plugin\DisplayBuilder\StandardDisplayBuilder;
+@@ -34,7 +35,9 @@ class StandardDisplayBuilderTest extends UnitTestCase {
+       ->reveal();
+     $account = $this->prophesize(AccountInterface::class)
+       ->reveal();
+-    $this->builder = new StandardDisplayBuilder(array(), 'standard', array(), $context_handler, $account);
++    $module_handler = $this->prophesize(ModuleHandlerInterface::class)
++      ->reveal();
++    $this->builder = new StandardDisplayBuilder(array(), 'standard', array(), $context_handler, $account, $module_handler);
+   }
+
+   /**

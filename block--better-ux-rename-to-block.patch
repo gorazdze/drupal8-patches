@@ -1,0 +1,2229 @@
+From 17492d046010cdc8fbbe0c5b4f2de21dff42b9ca Mon Sep 17 00:00:00 2001
+From: gorazdze <gorazd@dinamico.si>
+Date: Sat, 2 Jun 2018 16:08:50 +0200
+Subject: [PATCH] Rename Custom block to Block.
+
+---
+ core/core.api.php                                  |  2 +-
+ core/modules/block/block.module                    |  4 ++--
+ .../tests/src/Functional/BlockLanguageTest.php     |  4 ++--
+ .../block/tests/src/Functional/BlockTest.php       |  2 +-
+ .../src/Functional/Views/DisplayBlockTest.php      |  2 +-
+ .../src/Kernel/Migrate/d6/MigrateBlockTest.php     |  4 ++--
+ .../block/tests/src/Traits/BlockCreationTrait.php  |  2 +-
+ core/modules/block_content/block_content.info.yml  |  4 ++--
+ .../block_content/block_content.links.action.yml   |  4 ++--
+ .../block_content/block_content.links.task.yml     |  4 ++--
+ core/modules/block_content/block_content.module    | 18 ++++++++--------
+ core/modules/block_content/block_content.pages.inc |  4 ++--
+ .../block_content/block_content.routing.yml        |  6 +++---
+ .../config/optional/views.view.block_content.yml   | 10 ++++-----
+ .../config/schema/block_content.schema.yml         |  4 ++--
+ .../block_content/migrations/d6_custom_block.yml   |  2 +-
+ .../block_content/migrations/d7_custom_block.yml   |  2 +-
+ .../src/BlockContentAccessControlHandler.php       |  2 +-
+ .../modules/block_content/src/BlockContentForm.php |  6 +++---
+ .../block_content/src/BlockContentInterface.php    |  4 ++--
+ .../block_content/src/BlockContentListBuilder.php  |  2 +-
+ .../src/BlockContentTranslationHandler.php         |  2 +-
+ .../block_content/src/BlockContentTypeForm.php     | 12 +++++------
+ .../src/BlockContentTypeInterface.php              |  2 +-
+ .../src/BlockContentTypeListBuilder.php            |  4 ++--
+ .../block_content/src/BlockContentViewBuilder.php  |  4 ++--
+ .../src/Controller/BlockContentController.php      | 24 +++++++++++-----------
+ .../block_content/src/Entity/BlockContent.php      | 22 ++++++++++----------
+ .../block_content/src/Entity/BlockContentType.php  | 10 ++++-----
+ .../src/Form/BlockContentDeleteForm.php            |  2 +-
+ .../src/Form/BlockContentTypeDeleteForm.php        |  4 ++--
+ .../src/Plugin/Block/BlockContentBlock.php         |  8 ++++----
+ .../src/Plugin/Derivative/BlockContent.php         |  6 +++---
+ .../LocalAction/BlockContentAddLocalAction.php     |  4 ++--
+ .../src/Plugin/migrate/source/d6/Box.php           |  2 +-
+ .../src/Plugin/migrate/source/d7/BlockCustom.php   |  4 ++--
+ .../src/Plugin/views/area/ListingEmpty.php         |  2 +-
+ .../src/Tests/BlockContentTestBase.php             |  8 ++++----
+ .../src/Tests/Views/BlockContentTestBase.php       |  8 ++++----
+ .../templates/block-content-add-list.html.twig     |  6 +++---
+ .../block_content_test/block_content_test.info.yml |  4 ++--
+ .../block_content_test/block_content_test.module   |  4 ++--
+ .../src/Functional/BlockContentCacheTagsTest.php   |  4 ++--
+ .../src/Functional/BlockContentCreationTest.php    | 18 ++++++++--------
+ .../tests/src/Functional/BlockContentListTest.php  | 18 ++++++++--------
+ .../src/Functional/BlockContentListViewsTest.php   | 20 +++++++++---------
+ .../tests/src/Functional/BlockContentSaveTest.php  | 10 ++++-----
+ .../tests/src/Functional/BlockContentTestBase.php  |  8 ++++----
+ .../Functional/BlockContentTranslationUITest.php   |  4 ++--
+ .../tests/src/Functional/BlockContentTypeTest.php  | 20 +++++++++---------
+ .../src/Functional/BlockContentValidationTest.php  |  2 +-
+ .../tests/src/Functional/PageEditTest.php          |  4 ++--
+ .../Functional/Views/BlockContentRedirectTest.php  |  4 ++--
+ .../src/Functional/Views/BlockContentTestBase.php  |  8 ++++----
+ .../Migrate/MigrateBlockContentBodyFieldTest.php   |  2 +-
+ .../Kernel/Migrate/d6/MigrateBlockContentTest.php  |  8 ++++----
+ .../Kernel/Migrate/d7/MigrateCustomBlockTest.php   |  4 ++--
+ core/modules/book/src/Form/BookAdminEditForm.php   |  2 +-
+ .../src/Functional/ConfigTranslationListUiTest.php |  8 ++++----
+ .../content_moderation/content_moderation.module   |  2 +-
+ .../src/Functional/ModerationStateBlockTest.php    |  6 +++---
+ .../content_translation/content_translation.module |  2 +-
+ core/modules/field/field.module                    |  2 +-
+ core/modules/field_ui/field_ui.module              |  2 +-
+ .../modules/help/tests/src/Functional/HelpTest.php |  2 +-
+ .../migrate_drupal/tests/fixtures/drupal6.php      | 12 +++++------
+ .../src/Functional/MigrateUpgradeTestBase.php      |  2 +-
+ core/modules/rest/rest.module                      |  2 +-
+ .../BlockContent/BlockContentResourceTestBase.php  |  2 +-
+ .../QuickEditIntegrationTest.php                   | 12 +++++------
+ .../tests/src/Functional/ShortcutLinksTest.php     |  2 +-
+ core/modules/simpletest/simpletest.module          |  2 +-
+ .../drupal-8.block-context-manager-2354889.php     |  6 +++---
+ ...al-8.local-actions-tasks-into-blocks-507488.php |  2 +-
+ .../drupal-8.page-title-into-block-2476947.php     |  2 +-
+ ...8.seven-secondary-local-tasks-block-2569529.php |  2 +-
+ .../drupal-8.site-branding-into-block-2005546.php  |  2 +-
+ .../Update/UpdatePathRC1TestBaseFilledTest.php     |  4 ++--
+ .../Update/UpdatePathTestBaseFilledTest.php        |  4 ++--
+ .../src/Functional/UninstallDefaultContentTest.php |  2 +-
+ core/profiles/demo_umami/themes/umami/umami.theme  |  4 ++--
+ core/themes/seven/seven.theme                      |  2 +-
+ .../templates/block-content-add-list.html.twig     | 10 ++++-----
+ .../admin/block-content-add-list.html.twig         |  6 +++---
+ 84 files changed, 237 insertions(+), 237 deletions(-)
+
+diff --git a/core/core.api.php b/core/core.api.php
+index 5045fc55fa..a49b44bfaa 100644
+--- a/core/core.api.php
++++ b/core/core.api.php
+@@ -1248,7 +1248,7 @@
+  * Drupal has several distinct types of information, each with its own methods
+  * for storage and retrieval:
+  * - Content: Information meant to be displayed on your site: articles, basic
+- *   pages, images, files, custom blocks, etc. Content is stored and accessed
++ *   pages, images, files, blocks, etc. Content is stored and accessed
+  *   using @link entity_api Entities @endlink.
+  * - Session: Information about individual users' interactions with the site,
+  *   such as whether they are logged in. This is really "state" information, but
+diff --git a/core/modules/block/block.module b/core/modules/block/block.module
+index ee6a4a11ea..fc3461f662 100644
+--- a/core/modules/block/block.module
++++ b/core/modules/block/block.module
+@@ -34,8 +34,8 @@ function block_help($route_name, RouteMatchInterface $route_match) {
+       $output .= '<dd>' . t('To change the settings of an individual block click on the <em>Configure</em> link on the <a href=":blocks">Block layout page</a>. The available options vary depending on the module that provides the block. For all blocks you can change the block title and toggle whether to display it.', [':blocks' => Drupal::url('block.admin_display')]) . '</dd>';
+       $output .= '<dt>' . t('Controlling visibility') . '</dt>';
+       $output .= '<dd>' . t('You can control the visibility of a block by restricting it to specific pages, content types, and/or roles by setting the appropriate options under <em>Visibility settings</em> of the block configuration.') . '</dd>';
+-      $output .= '<dt>' . t('Adding custom blocks') . '</dt>';
+-      $output .= '<dd>' . t('You can add custom blocks, if the <em>Custom Block</em> module is installed. For more information, see the <a href=":blockcontent-help">Custom Block help page</a>.', [':blockcontent-help' => $block_content]) . '</dd>';
++      $output .= '<dt>' . t('Adding blocks') . '</dt>';
++      $output .= '<dd>' . t('You can add blocks, if the <em>Block</em> module is installed. For more information, see the <a href=":blockcontent-help">Block help page</a>.', [':blockcontent-help' => $block_content]) . '</dd>';
+       $output .= '</dl>';
+       return $output;
+   }
+diff --git a/core/modules/block/tests/src/Functional/BlockLanguageTest.php b/core/modules/block/tests/src/Functional/BlockLanguageTest.php
+index cf1b87720a..0e8876d0e0 100644
+--- a/core/modules/block/tests/src/Functional/BlockLanguageTest.php
++++ b/core/modules/block/tests/src/Functional/BlockLanguageTest.php
+@@ -67,11 +67,11 @@ public function testLanguageBlockVisibility() {
+ 
+     // Check that a page has a block.
+     $this->drupalGet('en');
+-    $this->assertText('Powered by Drupal', 'The body of the custom block appears on the page.');
++    $this->assertText('Powered by Drupal', 'The body of the block appears on the page.');
+ 
+     // Check that a page doesn't has a block for the current language anymore.
+     $this->drupalGet('fr');
+-    $this->assertNoText('Powered by Drupal', 'The body of the custom block does not appear on the page.');
++    $this->assertNoText('Powered by Drupal', 'The body of the block does not appear on the page.');
+   }
+ 
+   /**
+diff --git a/core/modules/block/tests/src/Functional/BlockTest.php b/core/modules/block/tests/src/Functional/BlockTest.php
+index 7518c82dc1..31e58ffdc8 100644
+--- a/core/modules/block/tests/src/Functional/BlockTest.php
++++ b/core/modules/block/tests/src/Functional/BlockTest.php
+@@ -342,7 +342,7 @@ public function moveBlockToRegion(array $block, $region) {
+     $this->drupalGet('');
+     $this->assertText(t($block['settings[label]']), 'Block successfully being displayed on the page.');
+ 
+-    // Confirm that the custom block was found at the proper region.
++    // Confirm that the block was found at the proper region.
+     $xpath = $this->buildXPathQuery('//div[@class=:region-class]//div[@id=:block-id]/*', [
+       ':region-class' => 'region region-' . Html::getClass($region),
+       ':block-id' => 'block-' . str_replace('_', '-', strtolower($block['id'])),
+diff --git a/core/modules/block/tests/src/Functional/Views/DisplayBlockTest.php b/core/modules/block/tests/src/Functional/Views/DisplayBlockTest.php
+index 0a18d7fa0f..0c55a9df1e 100644
+--- a/core/modules/block/tests/src/Functional/Views/DisplayBlockTest.php
++++ b/core/modules/block/tests/src/Functional/Views/DisplayBlockTest.php
+@@ -48,7 +48,7 @@ protected function setUp($import_test_views = TRUE) {
+   }
+ 
+   /**
+-   * Tests default and custom block categories.
++   * Tests default and block categories.
+    */
+   public function testBlockCategory() {
+     $this->drupalLogin($this->drupalCreateUser(['administer views', 'administer blocks']));
+diff --git a/core/modules/block/tests/src/Kernel/Migrate/d6/MigrateBlockTest.php b/core/modules/block/tests/src/Kernel/Migrate/d6/MigrateBlockTest.php
+index bb59f502c3..65d285e3fd 100644
+--- a/core/modules/block/tests/src/Kernel/Migrate/d6/MigrateBlockTest.php
++++ b/core/modules/block/tests/src/Kernel/Migrate/d6/MigrateBlockTest.php
+@@ -249,7 +249,7 @@ public function testBlockMigration() {
+     ];
+     $this->assertEntity('statistics', [], 'sidebar_second', 'bartik', 0, $settings);
+ 
+-    // Check custom blocks.
++    // Check blocks.
+     $visibility = [
+       'request_path' => [
+         'id' => 'request_path',
+@@ -299,7 +299,7 @@ public function testBlockMigration() {
+     ];
+     $this->assertEntity('block_2', [], 'right', 'test_theme', -7, $settings);
+ 
+-    // Custom block with php code is not migrated.
++    // Block with php code is not migrated.
+     $block = Block::load('block_3');
+     $this->assertFalse($block instanceof Block);
+   }
+diff --git a/core/modules/block/tests/src/Traits/BlockCreationTrait.php b/core/modules/block/tests/src/Traits/BlockCreationTrait.php
+index fe0a379aff..29a8469589 100644
+--- a/core/modules/block/tests/src/Traits/BlockCreationTrait.php
++++ b/core/modules/block/tests/src/Traits/BlockCreationTrait.php
+@@ -36,7 +36,7 @@
+    *   The block entity.
+    *
+    * @todo
+-   *   Add support for creating custom block instances.
++   *   Add support for creating block instances.
+    */
+   protected function placeBlock($plugin_id, array $settings = []) {
+     $config = \Drupal::configFactory();
+diff --git a/core/modules/block_content/block_content.info.yml b/core/modules/block_content/block_content.info.yml
+index b9ae5645c0..f337bb86b2 100644
+--- a/core/modules/block_content/block_content.info.yml
++++ b/core/modules/block_content/block_content.info.yml
+@@ -1,6 +1,6 @@
+-name: 'Custom Block'
++name: 'Block'
+ type: module
+-description: 'Allows the creation of custom blocks through the user interface.'
++description: 'Allows the creation of blocks through the user interface.'
+ package: Core
+ version: VERSION
+ core: 8.x
+diff --git a/core/modules/block_content/block_content.links.action.yml b/core/modules/block_content/block_content.links.action.yml
+index 4772a6fd7c..36810c0b04 100644
+--- a/core/modules/block_content/block_content.links.action.yml
++++ b/core/modules/block_content/block_content.links.action.yml
+@@ -1,12 +1,12 @@
+ block_content_type_add:
+   route_name: block_content.type_add
+-  title: 'Add custom block type'
++  title: 'Add block type'
+   appears_on:
+     - entity.block_content_type.collection
+ 
+ block_content_add_action:
+   route_name: block_content.add_page
+-  title: 'Add custom block'
++  title: 'Add block'
+   appears_on:
+     - block.admin_library
+     - entity.block_content.collection
+diff --git a/core/modules/block_content/block_content.links.task.yml b/core/modules/block_content/block_content.links.task.yml
+index 0b4256b63a..e4cf114e28 100644
+--- a/core/modules/block_content/block_content.links.task.yml
++++ b/core/modules/block_content/block_content.links.task.yml
+@@ -1,5 +1,5 @@
+ entity.block_content.collection:
+-  title: 'Custom block library'
++  title: 'Block library'
+   route_name: entity.block_content.collection
+   base_route: block.admin_display
+ block_content.list_sub:
+@@ -21,7 +21,7 @@ entity.block_content.delete_form:
+   route_name: entity.block_content.delete_form
+   base_route: entity.block_content.canonical
+ 
+-# Default tab for custom block type editing.
++# Default tab for block type editing.
+ entity.block_content_type.edit_form:
+   title: 'Edit'
+   route_name: entity.block_content_type.edit_form
+diff --git a/core/modules/block_content/block_content.module b/core/modules/block_content/block_content.module
+index 3adc979d9f..2859e38cd0 100644
+--- a/core/modules/block_content/block_content.module
++++ b/core/modules/block_content/block_content.module
+@@ -2,7 +2,7 @@
+ 
+ /**
+  * @file
+- * Allows the creation of custom blocks through the user interface.
++ * Allows the creation of blocks through the user interface.
+  */
+ 
+ use Drupal\Core\Routing\RouteMatchInterface;
+@@ -18,22 +18,22 @@ function block_content_help($route_name, RouteMatchInterface $route_match) {
+       $field_ui = \Drupal::moduleHandler()->moduleExists('field_ui') ? \Drupal::url('help.page', ['name' => 'field_ui']) : '#';
+       $output = '';
+       $output .= '<h3>' . t('About') . '</h3>';
+-      $output .= '<p>' . t('The Custom Block module allows you to create and manage custom <em>block types</em> and <em>content-containing blocks</em> from the <a href=":block-library">Custom block library</a> page. Custom block types have fields; see the <a href=":field-help">Field module help</a> for more information. Once created, custom blocks can be placed in regions just like blocks provided by other modules; see the <a href=":blocks">Block module help</a> page for details. For more information, see the <a href=":online-help">online documentation for the Custom Block module</a>.', [':block-library' => \Drupal::url('entity.block_content.collection'), ':block-content' => \Drupal::url('entity.block_content.collection'), ':field-help' => \Drupal::url('help.page', ['name' => 'field']), ':blocks' => \Drupal::url('help.page', ['name' => 'block']), ':online-help' => 'https://www.drupal.org/documentation/modules/block_content']) . '</p>';
++      $output .= '<p>' . t('The Block module allows you to create and manage custom <em>block types</em> and <em>content-containing blocks</em> from the <a href=":block-library">Block library</a> page. Block types have fields; see the <a href=":field-help">Field module help</a> for more information. Once created, blocks can be placed in regions just like blocks provided by other modules; see the <a href=":blocks">Block module help</a> page for details. For more information, see the <a href=":online-help">online documentation for the Block module</a>.', [':block-library' => \Drupal::url('entity.block_content.collection'), ':block-content' => \Drupal::url('entity.block_content.collection'), ':field-help' => \Drupal::url('help.page', ['name' => 'field']), ':blocks' => \Drupal::url('help.page', ['name' => 'block']), ':online-help' => 'https://www.drupal.org/documentation/modules/block_content']) . '</p>';
+       $output .= '<h3>' . t('Uses') . '</h3>';
+       $output .= '<dl>';
+-      $output .= '<dt>' . t('Creating and managing custom block types') . '</dt>';
+-      $output .= '<dd>' . t('Users with the <em>Administer blocks</em> permission can create and edit custom block types with fields and display settings, from the <a href=":types">Block types</a> page in the Custom block library. For more information about managing fields and display settings, see the <a href=":field-ui">Field UI module help</a>.', [':types' => \Drupal::url('entity.block_content_type.collection'), ':field-ui' => $field_ui]) . '</dd>';
+-      $output .= '<dt>' . t('Creating custom blocks') . '</dt>';
+-      $output .= '<dd>' . t('Users with the <em>Administer blocks</em> permission can create, edit, and delete custom blocks of each defined custom block type, from the <a href=":block-library">Blocks</a> page in the Custom block library. After creating a block, place it in a region from the <a href=":blocks">Block layout</a> page; see the <a href=":block_help">Block module help</a> for more information about placing blocks.', [':blocks' => \Drupal::url('block.admin_display'), ':block-library' => \Drupal::url('entity.block_content.collection'), ':block_help' => \Drupal::url('help.page', ['name' => 'block'])]) . '</dd>';
++      $output .= '<dt>' . t('Creating and managing block types') . '</dt>';
++      $output .= '<dd>' . t('Users with the <em>Administer blocks</em> permission can create and edit block types with fields and display settings, from the <a href=":types">Block types</a> page in the Block library. For more information about managing fields and display settings, see the <a href=":field-ui">Field UI module help</a>.', [':types' => \Drupal::url('entity.block_content_type.collection'), ':field-ui' => $field_ui]) . '</dd>';
++      $output .= '<dt>' . t('Creating blocks') . '</dt>';
++      $output .= '<dd>' . t('Users with the <em>Administer blocks</em> permission can create, edit, and delete blocks of each defined block type, from the <a href=":block-library">Blocks</a> page in the Block library. After creating a block, place it in a region from the <a href=":blocks">Block layout</a> page; see the <a href=":block_help">Block module help</a> for more information about placing blocks.', [':blocks' => \Drupal::url('block.admin_display'), ':block-library' => \Drupal::url('entity.block_content.collection'), ':block_help' => \Drupal::url('help.page', ['name' => 'block'])]) . '</dd>';
+       $output .= '</dl>';
+       return $output;
+ 
+     case 'entity.block_content.collection':
+-      $output = '<p>' . t('Blocks in the block library belong to <a href=":types">Custom block types</a>, each with its own fields and display settings. After creating a block, place it in a region from the <a href=":blocks">Block layout</a> page.', [':types' => \Drupal::url('entity.block_content_type.collection'), ':blocks' => \Drupal::url('block.admin_display')]) . '</p>';
++      $output = '<p>' . t('Blocks in the block library belong to <a href=":types">Block types</a>, each with its own fields and display settings. After creating a block, place it in a region from the <a href=":blocks">Block layout</a> page.', [':types' => \Drupal::url('entity.block_content_type.collection'), ':blocks' => \Drupal::url('block.admin_display')]) . '</p>';
+       return $output;
+ 
+     case 'entity.block_content_type.collection':
+-      $output = '<p>' . t('Each block type has its own fields and display settings. Create blocks of each type on the <a href=":block-library">Blocks</a> page in the custom block library.', [':block-library' => \Drupal::url('entity.block_content.collection')]) . '</p>';
++      $output = '<p>' . t('Each block type has its own fields and display settings. Create blocks of each type on the <a href=":block-library">Blocks</a> page in the block library.', [':block-library' => \Drupal::url('entity.block_content.collection')]) . '</p>';
+       return $output;
+ 
+   }
+@@ -65,7 +65,7 @@ function block_content_entity_type_alter(array &$entity_types) {
+ }
+ 
+ /**
+- * Adds the default body field to a custom block type.
++ * Adds the default body field to a block type.
+  *
+  * @param string $block_type_id
+  *   Id of the block type.
+diff --git a/core/modules/block_content/block_content.pages.inc b/core/modules/block_content/block_content.pages.inc
+index e50e71787b..f0e2af8f41 100644
+--- a/core/modules/block_content/block_content.pages.inc
++++ b/core/modules/block_content/block_content.pages.inc
+@@ -2,13 +2,13 @@
+ 
+ /**
+  * @file
+- * Provides page callbacks for custom blocks.
++ * Provides page callbacks for blocks.
+  */
+ 
+ use Drupal\Core\Url;
+ 
+ /**
+- * Prepares variables for a custom block type creation list templates.
++ * Prepares variables for a block type creation list templates.
+  *
+  * Default template: block-content-add-list.html.twig.
+  *
+diff --git a/core/modules/block_content/block_content.routing.yml b/core/modules/block_content/block_content.routing.yml
+index 37d9b7184f..f85c102177 100644
+--- a/core/modules/block_content/block_content.routing.yml
++++ b/core/modules/block_content/block_content.routing.yml
+@@ -2,7 +2,7 @@ entity.block_content_type.collection:
+   path: '/admin/structure/block/block-content/types'
+   defaults:
+     _entity_list: 'block_content_type'
+-    _title: 'Custom block library'
++    _title: 'Block library'
+   requirements:
+     _permission: 'administer blocks'
+ 
+@@ -10,7 +10,7 @@ block_content.add_page:
+   path: '/block/add'
+   defaults:
+     _controller: '\Drupal\block_content\Controller\BlockContentController::add'
+-    _title: 'Add custom block'
++    _title: 'Add block'
+   options:
+     _admin_route: TRUE
+   requirements:
+@@ -86,7 +86,7 @@ entity.block_content_type.edit_form:
+ entity.block_content.collection:
+   path: '/admin/structure/block/block-content'
+   defaults:
+-    _title: 'Custom block library'
++    _title: 'Block library'
+     _entity_list: 'block_content'
+   requirements:
+     _permission: 'administer blocks'
+diff --git a/core/modules/block_content/config/optional/views.view.block_content.yml b/core/modules/block_content/config/optional/views.view.block_content.yml
+index 1be5a0417c..221a122ef6 100644
+--- a/core/modules/block_content/config/optional/views.view.block_content.yml
++++ b/core/modules/block_content/config/optional/views.view.block_content.yml
+@@ -5,9 +5,9 @@ dependencies:
+     - block_content
+     - user
+ id: block_content
+-label: 'Custom block library'
++label: 'Block library'
+ module: views
+-description: 'Find and manage custom blocks.'
++description: 'Find and manage blocks.'
+ tag: default
+ base_table: block_content_field_data
+ base_field: id
+@@ -432,7 +432,7 @@ display:
+           entity_field: type
+           plugin_id: bundle
+       sorts: {  }
+-      title: 'Custom block library'
++      title: 'Block library'
+       header: {  }
+       footer: {  }
+       empty:
+@@ -445,7 +445,7 @@ display:
+           admin_label: ''
+           empty: true
+           tokenize: false
+-          content: 'There are no custom blocks available.'
++          content: 'There are no blocks available.'
+           plugin_id: text_custom
+         block_content_listing_empty:
+           admin_label: ''
+@@ -480,7 +480,7 @@ display:
+       path: admin/structure/block/block-content
+       menu:
+         type: tab
+-        title: 'Custom block library'
++        title: 'Block library'
+         description: ''
+         parent: block.admin_display
+         weight: 0
+diff --git a/core/modules/block_content/config/schema/block_content.schema.yml b/core/modules/block_content/config/schema/block_content.schema.yml
+index 2e7c338b2c..4ce090b87b 100644
+--- a/core/modules/block_content/config/schema/block_content.schema.yml
++++ b/core/modules/block_content/config/schema/block_content.schema.yml
+@@ -1,8 +1,8 @@
+-# Schema for the configuration files of the Custom Block module.
++# Schema for the configuration files of the Block module.
+ 
+ block_content.type.*:
+   type: config_entity
+-  label: 'Custom block type settings'
++  label: 'Block type settings'
+   mapping:
+     id:
+       type: string
+diff --git a/core/modules/block_content/migrations/d6_custom_block.yml b/core/modules/block_content/migrations/d6_custom_block.yml
+index 84e2a4942f..b06771f8ba 100644
+--- a/core/modules/block_content/migrations/d6_custom_block.yml
++++ b/core/modules/block_content/migrations/d6_custom_block.yml
+@@ -1,5 +1,5 @@
+ id: d6_custom_block
+-label: Custom blocks
++label: Blocks
+ audit: true
+ migration_tags:
+   - Drupal 6
+diff --git a/core/modules/block_content/migrations/d7_custom_block.yml b/core/modules/block_content/migrations/d7_custom_block.yml
+index 16c659f699..1bc1df135b 100644
+--- a/core/modules/block_content/migrations/d7_custom_block.yml
++++ b/core/modules/block_content/migrations/d7_custom_block.yml
+@@ -1,5 +1,5 @@
+ id: d7_custom_block
+-label: Custom blocks
++label: Blocks
+ audit: true
+ migration_tags:
+   - Drupal 7
+diff --git a/core/modules/block_content/src/BlockContentAccessControlHandler.php b/core/modules/block_content/src/BlockContentAccessControlHandler.php
+index 7079ef4849..a453f158a1 100644
+--- a/core/modules/block_content/src/BlockContentAccessControlHandler.php
++++ b/core/modules/block_content/src/BlockContentAccessControlHandler.php
+@@ -8,7 +8,7 @@
+ use Drupal\Core\Session\AccountInterface;
+ 
+ /**
+- * Defines the access control handler for the custom block entity type.
++ * Defines the access control handler for the block entity type.
+  *
+  * @see \Drupal\block_content\Entity\BlockContent
+  */
+diff --git a/core/modules/block_content/src/BlockContentForm.php b/core/modules/block_content/src/BlockContentForm.php
+index 225dc91b46..1a3a59e3d3 100644
+--- a/core/modules/block_content/src/BlockContentForm.php
++++ b/core/modules/block_content/src/BlockContentForm.php
+@@ -7,7 +7,7 @@
+ use Drupal\Core\Form\FormStateInterface;
+ 
+ /**
+- * Form handler for the custom block edit forms.
++ * Form handler for the block edit forms.
+  *
+  * @internal
+  */
+@@ -29,9 +29,9 @@ public function form(array $form, FormStateInterface $form_state) {
+     $form = parent::form($form, $form_state);
+ 
+     if ($this->operation == 'edit') {
+-      $form['#title'] = $this->t('Edit custom block %label', ['%label' => $block->label()]);
++      $form['#title'] = $this->t('Edit block %label', ['%label' => $block->label()]);
+     }
+-    // Override the default CSS class name, since the user-defined custom block
++    // Override the default CSS class name, since the user-defined block
+     // type name in 'TYPE-block-form' potentially clashes with third-party class
+     // names.
+     $form['#attributes']['class'][0] = 'block-' . Html::getClass($block->bundle()) . '-form';
+diff --git a/core/modules/block_content/src/BlockContentInterface.php b/core/modules/block_content/src/BlockContentInterface.php
+index 75fdc5979b..c1d7b981f9 100644
+--- a/core/modules/block_content/src/BlockContentInterface.php
++++ b/core/modules/block_content/src/BlockContentInterface.php
+@@ -8,7 +8,7 @@
+ use Drupal\Core\Entity\RevisionLogInterface;
+ 
+ /**
+- * Provides an interface defining a custom block entity.
++ * Provides an interface defining a block entity.
+  */
+ interface BlockContentInterface extends ContentEntityInterface, EntityChangedInterface, RevisionLogInterface, EntityPublishedInterface {
+ 
+@@ -76,7 +76,7 @@ public function setTheme($theme);
+   public function getTheme();
+ 
+   /**
+-   * Gets the configured instances of this custom block.
++   * Gets the configured instances of this block.
+    *
+    * @return array
+    *   Array of Drupal\block\Core\Plugin\Entity\Block entities.
+diff --git a/core/modules/block_content/src/BlockContentListBuilder.php b/core/modules/block_content/src/BlockContentListBuilder.php
+index 7a4bdfc4c8..cda32c7d5f 100644
+--- a/core/modules/block_content/src/BlockContentListBuilder.php
++++ b/core/modules/block_content/src/BlockContentListBuilder.php
+@@ -6,7 +6,7 @@
+ use Drupal\Core\Entity\EntityListBuilder;
+ 
+ /**
+- * Defines a class to build a listing of custom block entities.
++ * Defines a class to build a listing of block entities.
+  *
+  * @see \Drupal\block_content\Entity\BlockContent
+  */
+diff --git a/core/modules/block_content/src/BlockContentTranslationHandler.php b/core/modules/block_content/src/BlockContentTranslationHandler.php
+index 612613b376..3dfa16e368 100644
+--- a/core/modules/block_content/src/BlockContentTranslationHandler.php
++++ b/core/modules/block_content/src/BlockContentTranslationHandler.php
+@@ -7,7 +7,7 @@
+ use Drupal\content_translation\ContentTranslationHandler;
+ 
+ /**
+- * Defines the translation handler for custom blocks.
++ * Defines the translation handler for blocks.
+  */
+ class BlockContentTranslationHandler extends ContentTranslationHandler {
+ 
+diff --git a/core/modules/block_content/src/BlockContentTypeForm.php b/core/modules/block_content/src/BlockContentTypeForm.php
+index 00098d3cf3..09f2b3a938 100644
+--- a/core/modules/block_content/src/BlockContentTypeForm.php
++++ b/core/modules/block_content/src/BlockContentTypeForm.php
+@@ -24,10 +24,10 @@ public function form(array $form, FormStateInterface $form_state) {
+     $block_type = $this->entity;
+ 
+     if ($this->operation == 'add') {
+-      $form['#title'] = $this->t('Add custom block type');
++      $form['#title'] = $this->t('Add block type');
+     }
+     else {
+-      $form['#title'] = $this->t('Edit %label custom block type', ['%label' => $block_type->label()]);
++      $form['#title'] = $this->t('Edit %label block type', ['%label' => $block_type->label()]);
+     }
+ 
+     $form['label'] = [
+@@ -100,13 +100,13 @@ public function save(array $form, FormStateInterface $form_state) {
+     $edit_link = $this->entity->link($this->t('Edit'));
+     $logger = $this->logger('block_content');
+     if ($status == SAVED_UPDATED) {
+-      drupal_set_message(t('Custom block type %label has been updated.', ['%label' => $block_type->label()]));
+-      $logger->notice('Custom block type %label has been updated.', ['%label' => $block_type->label(), 'link' => $edit_link]);
++      drupal_set_message(t('Block type %label has been updated.', ['%label' => $block_type->label()]));
++      $logger->notice('Block type %label has been updated.', ['%label' => $block_type->label(), 'link' => $edit_link]);
+     }
+     else {
+       block_content_add_body_field($block_type->id());
+-      drupal_set_message(t('Custom block type %label has been added.', ['%label' => $block_type->label()]));
+-      $logger->notice('Custom block type %label has been added.', ['%label' => $block_type->label(), 'link' => $edit_link]);
++      drupal_set_message(t('Block type %label has been added.', ['%label' => $block_type->label()]));
++      $logger->notice('Block type %label has been added.', ['%label' => $block_type->label(), 'link' => $edit_link]);
+     }
+ 
+     $form_state->setRedirectUrl($this->entity->urlInfo('collection'));
+diff --git a/core/modules/block_content/src/BlockContentTypeInterface.php b/core/modules/block_content/src/BlockContentTypeInterface.php
+index da3864e1a0..aaf7957b89 100644
+--- a/core/modules/block_content/src/BlockContentTypeInterface.php
++++ b/core/modules/block_content/src/BlockContentTypeInterface.php
+@@ -6,7 +6,7 @@
+ use Drupal\Core\Entity\RevisionableEntityBundleInterface;
+ 
+ /**
+- * Provides an interface defining a custom block type entity.
++ * Provides an interface defining a block type entity.
+  */
+ interface BlockContentTypeInterface extends ConfigEntityInterface, RevisionableEntityBundleInterface {
+ 
+diff --git a/core/modules/block_content/src/BlockContentTypeListBuilder.php b/core/modules/block_content/src/BlockContentTypeListBuilder.php
+index 43ee338262..d6e0228056 100644
+--- a/core/modules/block_content/src/BlockContentTypeListBuilder.php
++++ b/core/modules/block_content/src/BlockContentTypeListBuilder.php
+@@ -6,7 +6,7 @@
+ use Drupal\Core\Entity\EntityInterface;
+ 
+ /**
+- * Defines a class to build a listing of custom block type entities.
++ * Defines a class to build a listing of block type entities.
+  *
+  * @see \Drupal\block_content\Entity\BlockContentType
+  */
+@@ -47,7 +47,7 @@ public function buildRow(EntityInterface $entity) {
+    * {@inheritdoc}
+    */
+   protected function getTitle() {
+-    return $this->t('Custom block types');
++    return $this->t('Block types');
+   }
+ 
+ }
+diff --git a/core/modules/block_content/src/BlockContentViewBuilder.php b/core/modules/block_content/src/BlockContentViewBuilder.php
+index 2ea321d769..833c43fd2a 100644
+--- a/core/modules/block_content/src/BlockContentViewBuilder.php
++++ b/core/modules/block_content/src/BlockContentViewBuilder.php
+@@ -6,7 +6,7 @@
+ use Drupal\Core\Entity\EntityViewBuilder;
+ 
+ /**
+- * View builder handler for custom blocks.
++ * View builder handler for blocks.
+  */
+ class BlockContentViewBuilder extends EntityViewBuilder {
+ 
+@@ -34,7 +34,7 @@ public function viewMultiple(array $entities = [], $view_mode = 'full', $langcod
+    */
+   protected function getBuildDefaults(EntityInterface $entity, $view_mode) {
+     $build = parent::getBuildDefaults($entity, $view_mode);
+-    // The custom block will be rendered in the wrapped block template already
++    // The block will be rendered in the wrapped block template already
+     // and thus has no entity template itself.
+     unset($build['#theme']);
+     return $build;
+diff --git a/core/modules/block_content/src/Controller/BlockContentController.php b/core/modules/block_content/src/Controller/BlockContentController.php
+index 7c1f8aac33..bda7edaf72 100644
+--- a/core/modules/block_content/src/Controller/BlockContentController.php
++++ b/core/modules/block_content/src/Controller/BlockContentController.php
+@@ -13,14 +13,14 @@
+ class BlockContentController extends ControllerBase {
+ 
+   /**
+-   * The custom block storage.
++   * The block storage.
+    *
+    * @var \Drupal\Core\Entity\EntityStorageInterface
+    */
+   protected $blockContentStorage;
+ 
+   /**
+-   * The custom block type storage.
++   * The block type storage.
+    *
+    * @var \Drupal\Core\Entity\EntityStorageInterface
+    */
+@@ -49,9 +49,9 @@ public static function create(ContainerInterface $container) {
+    * Constructs a BlockContent object.
+    *
+    * @param \Drupal\Core\Entity\EntityStorageInterface $block_content_storage
+-   *   The custom block storage.
++   *   The block storage.
+    * @param \Drupal\Core\Entity\EntityStorageInterface $block_content_type_storage
+-   *   The custom block type storage.
++   *   The block type storage.
+    * @param \Drupal\Core\Extension\ThemeHandlerInterface $theme_handler
+    *   The theme handler.
+    */
+@@ -62,15 +62,15 @@ public function __construct(EntityStorageInterface $block_content_storage, Entit
+   }
+ 
+   /**
+-   * Displays add custom block links for available types.
++   * Displays add block links for available types.
+    *
+    * @param \Symfony\Component\HttpFoundation\Request $request
+    *   The current request object.
+    *
+    * @return array
+-   *   A render array for a list of the custom block types that can be added or
+-   *   if there is only one custom block type defined for the site, the function
+-   *   returns the custom block add page for that custom block type.
++   *   A render array for a list of the block types that can be added or
++   *   if there is only one block type defined for the site, the function
++   *   returns the block add page for that block type.
+    */
+   public function add(Request $request) {
+     $types = $this->blockContentTypeStorage->loadMultiple();
+@@ -90,10 +90,10 @@ public function add(Request $request) {
+   }
+ 
+   /**
+-   * Presents the custom block creation form.
++   * Presents the block creation form.
+    *
+    * @param \Drupal\block_content\BlockContentTypeInterface $block_content_type
+-   *   The custom block type to add.
++   *   The block type to add.
+    * @param \Symfony\Component\HttpFoundation\Request $request
+    *   The current request object.
+    *
+@@ -117,13 +117,13 @@ public function addForm(BlockContentTypeInterface $block_content_type, Request $
+    * Provides the page title for this controller.
+    *
+    * @param \Drupal\block_content\BlockContentTypeInterface $block_content_type
+-   *   The custom block type being added.
++   *   The block type being added.
+    *
+    * @return string
+    *   The page title.
+    */
+   public function getAddFormTitle(BlockContentTypeInterface $block_content_type) {
+-    return $this->t('Add %type custom block', ['%type' => $block_content_type->label()]);
++    return $this->t('Add %type block', ['%type' => $block_content_type->label()]);
+   }
+ 
+ }
+diff --git a/core/modules/block_content/src/Entity/BlockContent.php b/core/modules/block_content/src/Entity/BlockContent.php
+index 3c8858ff88..ef13ee8ac2 100644
+--- a/core/modules/block_content/src/Entity/BlockContent.php
++++ b/core/modules/block_content/src/Entity/BlockContent.php
+@@ -10,12 +10,12 @@
+ use Drupal\user\UserInterface;
+ 
+ /**
+- * Defines the custom block entity class.
++ * Defines the block entity class.
+  *
+  * @ContentEntityType(
+  *   id = "block_content",
+- *   label = @Translation("Custom block"),
+- *   bundle_label = @Translation("Custom block type"),
++ *   label = @Translation("Block"),
++ *   bundle_label = @Translation("Block type"),
+  *   handlers = {
+  *     "storage" = "Drupal\Core\Entity\Sql\SqlContentEntityStorage",
+  *     "access" = "Drupal\block_content\BlockContentAccessControlHandler",
+@@ -73,9 +73,9 @@ class BlockContent extends EditorialContentEntityBase implements BlockContentInt
+   /**
+    * The theme the block is being created in.
+    *
+-   * When creating a new custom block from the block library, the user is
++   * When creating a new block from the block library, the user is
+    * redirected to the configure form for that block in the given theme. The
+-   * theme is stored against the block when the custom block add form is shown.
++   * theme is stored against the block when the block add form is shown.
+    *
+    * @var string
+    */
+@@ -160,14 +160,14 @@ public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
+     /** @var \Drupal\Core\Field\BaseFieldDefinition[] $fields */
+     $fields = parent::baseFieldDefinitions($entity_type);
+ 
+-    $fields['id']->setLabel(t('Custom block ID'))
+-      ->setDescription(t('The custom block ID.'));
++    $fields['id']->setLabel(t('Block ID'))
++      ->setDescription(t('The block ID.'));
+ 
+-    $fields['uuid']->setDescription(t('The custom block UUID.'));
++    $fields['uuid']->setDescription(t('The block UUID.'));
+ 
+     $fields['revision_id']->setDescription(t('The revision ID.'));
+ 
+-    $fields['langcode']->setDescription(t('The custom block language code.'));
++    $fields['langcode']->setDescription(t('The block language code.'));
+ 
+     $fields['type']->setLabel(t('Block type'))
+       ->setDescription(t('The block type.'));
+@@ -189,7 +189,7 @@ public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
+ 
+     $fields['changed'] = BaseFieldDefinition::create('changed')
+       ->setLabel(t('Changed'))
+-      ->setDescription(t('The time that the custom block was last edited.'))
++      ->setDescription(t('The time that the block was last edited.'))
+       ->setTranslatable(TRUE)
+       ->setRevisionable(TRUE);
+ 
+@@ -279,7 +279,7 @@ public function setRevisionLogMessage($revision_log_message) {
+    * Invalidates the block plugin cache after changes and deletions.
+    */
+   protected static function invalidateBlockPluginCache() {
+-    // Invalidate the block cache to update custom block-based derivatives.
++    // Invalidate the block cache to update block-based derivatives.
+     \Drupal::service('plugin.manager.block')->clearCachedDefinitions();
+   }
+ 
+diff --git a/core/modules/block_content/src/Entity/BlockContentType.php b/core/modules/block_content/src/Entity/BlockContentType.php
+index 339b4e5033..f5393611f8 100644
+--- a/core/modules/block_content/src/Entity/BlockContentType.php
++++ b/core/modules/block_content/src/Entity/BlockContentType.php
+@@ -6,11 +6,11 @@
+ use Drupal\block_content\BlockContentTypeInterface;
+ 
+ /**
+- * Defines the custom block type entity.
++ * Defines the block type entity.
+  *
+  * @ConfigEntityType(
+  *   id = "block_content_type",
+- *   label = @Translation("Custom block type"),
++ *   label = @Translation("Block type"),
+  *   handlers = {
+  *     "form" = {
+  *       "default" = "Drupal\block_content\BlockContentTypeForm",
+@@ -43,21 +43,21 @@
+ class BlockContentType extends ConfigEntityBundleBase implements BlockContentTypeInterface {
+ 
+   /**
+-   * The custom block type ID.
++   * The block type ID.
+    *
+    * @var string
+    */
+   protected $id;
+ 
+   /**
+-   * The custom block type label.
++   * The block type label.
+    *
+    * @var string
+    */
+   protected $label;
+ 
+   /**
+-   * The default revision setting for custom blocks of this type.
++   * The default revision setting for blocks of this type.
+    *
+    * @var bool
+    */
+diff --git a/core/modules/block_content/src/Form/BlockContentDeleteForm.php b/core/modules/block_content/src/Form/BlockContentDeleteForm.php
+index fe0759cc16..904ea75a16 100644
+--- a/core/modules/block_content/src/Form/BlockContentDeleteForm.php
++++ b/core/modules/block_content/src/Form/BlockContentDeleteForm.php
+@@ -6,7 +6,7 @@
+ use Drupal\Core\Form\FormStateInterface;
+ 
+ /**
+- * Provides a confirmation form for deleting a custom block entity.
++ * Provides a confirmation form for deleting a block entity.
+  *
+  * @internal
+  */
+diff --git a/core/modules/block_content/src/Form/BlockContentTypeDeleteForm.php b/core/modules/block_content/src/Form/BlockContentTypeDeleteForm.php
+index 34da0a9874..3528e46bfc 100644
+--- a/core/modules/block_content/src/Form/BlockContentTypeDeleteForm.php
++++ b/core/modules/block_content/src/Form/BlockContentTypeDeleteForm.php
+@@ -6,7 +6,7 @@
+ use Drupal\Core\Form\FormStateInterface;
+ 
+ /**
+- * Provides a confirmation form for deleting a custom block type entity.
++ * Provides a confirmation form for deleting a block type entity.
+  *
+  * @internal
+  */
+@@ -20,7 +20,7 @@ public function buildForm(array $form, FormStateInterface $form_state) {
+       ->condition('type', $this->entity->id())
+       ->execute();
+     if (!empty($blocks)) {
+-      $caption = '<p>' . $this->formatPlural(count($blocks), '%label is used by 1 custom block on your site. You can not remove this block type until you have removed all of the %label blocks.', '%label is used by @count custom blocks on your site. You may not remove %label until you have removed all of the %label custom blocks.', ['%label' => $this->entity->label()]) . '</p>';
++      $caption = '<p>' . $this->formatPlural(count($blocks), '%label is used by 1 block on your site. You can not remove this block type until you have removed all of the %label blocks.', '%label is used by @count blocks on your site. You may not remove %label until you have removed all of the %label blocks.', ['%label' => $this->entity->label()]) . '</p>';
+       $form['description'] = ['#markup' => $caption];
+       return $form;
+     }
+diff --git a/core/modules/block_content/src/Plugin/Block/BlockContentBlock.php b/core/modules/block_content/src/Plugin/Block/BlockContentBlock.php
+index 5e09be8b58..390e619920 100644
+--- a/core/modules/block_content/src/Plugin/Block/BlockContentBlock.php
++++ b/core/modules/block_content/src/Plugin/Block/BlockContentBlock.php
+@@ -15,11 +15,11 @@
+ use Symfony\Component\DependencyInjection\ContainerInterface;
+ 
+ /**
+- * Defines a generic custom block type.
++ * Defines a generic block type.
+  *
+  * @Block(
+  *  id = "block_content",
+- *  admin_label = @Translation("Custom block"),
++ *  admin_label = @Translation("Block"),
+  *  category = @Translation("Custom"),
+  *  deriver = "Drupal\block_content\Plugin\Derivative\BlockContent"
+  * )
+@@ -164,7 +164,7 @@ public function blockForm($form, FormStateInterface $form_state) {
+    * {@inheritdoc}
+    */
+   public function blockSubmit($form, FormStateInterface $form_state) {
+-    // Invalidate the block cache to update custom block-based derivatives.
++    // Invalidate the block cache to update block-based derivatives.
+     $this->configuration['view_mode'] = $form_state->getValue('view_mode');
+     $this->blockManager->clearCachedDefinitions();
+   }
+@@ -188,7 +188,7 @@ public function build() {
+     }
+     else {
+       return [
+-        '#markup' => $this->t('Block with uuid %uuid does not exist. <a href=":url">Add custom block</a>.', [
++        '#markup' => $this->t('Block with uuid %uuid does not exist. <a href=":url">Add block</a>.', [
+           '%uuid' => $this->getDerivativeId(),
+           ':url' => $this->urlGenerator->generate('block_content.add_page')
+         ]),
+diff --git a/core/modules/block_content/src/Plugin/Derivative/BlockContent.php b/core/modules/block_content/src/Plugin/Derivative/BlockContent.php
+index 25806c5f13..d1dcfa0932 100644
+--- a/core/modules/block_content/src/Plugin/Derivative/BlockContent.php
++++ b/core/modules/block_content/src/Plugin/Derivative/BlockContent.php
+@@ -8,12 +8,12 @@
+ use Symfony\Component\DependencyInjection\ContainerInterface;
+ 
+ /**
+- * Retrieves block plugin definitions for all custom blocks.
++ * Retrieves block plugin definitions for all blocks.
+  */
+ class BlockContent extends DeriverBase implements ContainerDeriverInterface {
+ 
+   /**
+-   * The custom block storage.
++   * The block storage.
+    *
+    * @var \Drupal\Core\Entity\EntityStorageInterface
+    */
+@@ -23,7 +23,7 @@ class BlockContent extends DeriverBase implements ContainerDeriverInterface {
+    * Constructs a BlockContent object.
+    *
+    * @param \Drupal\Core\Entity\EntityStorageInterface $block_content_storage
+-   *   The custom block storage.
++   *   The block storage.
+    */
+   public function __construct(EntityStorageInterface $block_content_storage) {
+     $this->blockContentStorage = $block_content_storage;
+diff --git a/core/modules/block_content/src/Plugin/Menu/LocalAction/BlockContentAddLocalAction.php b/core/modules/block_content/src/Plugin/Menu/LocalAction/BlockContentAddLocalAction.php
+index 8f97839e47..5e61d7600e 100644
+--- a/core/modules/block_content/src/Plugin/Menu/LocalAction/BlockContentAddLocalAction.php
++++ b/core/modules/block_content/src/Plugin/Menu/LocalAction/BlockContentAddLocalAction.php
+@@ -7,7 +7,7 @@
+ use Drupal\Core\Routing\UrlGeneratorTrait;
+ 
+ /**
+- * Modifies the 'Add custom block' local action.
++ * Modifies the 'Add block' local action.
+  */
+ class BlockContentAddLocalAction extends LocalActionDefault {
+   use UrlGeneratorTrait;
+@@ -21,7 +21,7 @@ public function getOptions(RouteMatchInterface $route_match) {
+     if ($theme = $route_match->getParameter('theme')) {
+       $options['query']['theme'] = $theme;
+     }
+-    // Adds a destination on custom block listing.
++    // Adds a destination on block listing.
+     if ($route_match->getRouteName() == 'entity.block_content.collection') {
+       $options['query']['destination'] = $this->url('<current>');
+     }
+diff --git a/core/modules/block_content/src/Plugin/migrate/source/d6/Box.php b/core/modules/block_content/src/Plugin/migrate/source/d6/Box.php
+index 0a1da1920e..1762b0d4fb 100644
+--- a/core/modules/block_content/src/Plugin/migrate/source/d6/Box.php
++++ b/core/modules/block_content/src/Plugin/migrate/source/d6/Box.php
+@@ -33,7 +33,7 @@ public function fields() {
+       'bid' => $this->t('The numeric identifier of the block/box'),
+       'body' => $this->t('The block/box content'),
+       'info' => $this->t('Admin title of the block/box.'),
+-      'format' => $this->t('Input format of the custom block/box content.'),
++      'format' => $this->t('Input format of the block/box content.'),
+     ];
+   }
+ 
+diff --git a/core/modules/block_content/src/Plugin/migrate/source/d7/BlockCustom.php b/core/modules/block_content/src/Plugin/migrate/source/d7/BlockCustom.php
+index 7c166e9d3d..883dda260e 100644
+--- a/core/modules/block_content/src/Plugin/migrate/source/d7/BlockCustom.php
++++ b/core/modules/block_content/src/Plugin/migrate/source/d7/BlockCustom.php
+@@ -5,7 +5,7 @@
+ use Drupal\migrate_drupal\Plugin\migrate\source\DrupalSqlBase;
+ 
+ /**
+- * Drupal 7 custom block source from database.
++ * Drupal 7 block source from database.
+  *
+  * @MigrateSource(
+  *   id = "d7_block_custom",
+@@ -29,7 +29,7 @@ public function fields() {
+       'bid' => $this->t('The numeric identifier of the block/box'),
+       'body' => $this->t('The block/box content'),
+       'info' => $this->t('Admin title of the block/box.'),
+-      'format' => $this->t('Input format of the custom block/box content.'),
++      'format' => $this->t('Input format of the block/box content.'),
+     ];
+   }
+ 
+diff --git a/core/modules/block_content/src/Plugin/views/area/ListingEmpty.php b/core/modules/block_content/src/Plugin/views/area/ListingEmpty.php
+index e412f182ec..a33249dc1b 100644
+--- a/core/modules/block_content/src/Plugin/views/area/ListingEmpty.php
++++ b/core/modules/block_content/src/Plugin/views/area/ListingEmpty.php
+@@ -73,7 +73,7 @@ public function render($empty = FALSE) {
+       /** @var \Drupal\Core\Access\AccessResultInterface|\Drupal\Core\Cache\CacheableDependencyInterface $access_result */
+       $access_result = $this->accessManager->checkNamedRoute('block_content.add_page', [], $this->currentUser, TRUE);
+       $element = [
+-        '#markup' => $this->t('Add a <a href=":url">custom block</a>.', [':url' => Url::fromRoute('block_content.add_page')->toString()]),
++        '#markup' => $this->t('Add a <a href=":url">block</a>.', [':url' => Url::fromRoute('block_content.add_page')->toString()]),
+         '#access' => $access_result->isAllowed(),
+         '#cache' => [
+           'contexts' => $access_result->getCacheContexts(),
+diff --git a/core/modules/block_content/src/Tests/BlockContentTestBase.php b/core/modules/block_content/src/Tests/BlockContentTestBase.php
+index f277f53d7f..ab38d145ed 100644
+--- a/core/modules/block_content/src/Tests/BlockContentTestBase.php
++++ b/core/modules/block_content/src/Tests/BlockContentTestBase.php
+@@ -65,7 +65,7 @@ protected function setUp() {
+   }
+ 
+   /**
+-   * Creates a custom block.
++   * Creates a block.
+    *
+    * @param bool|string $title
+    *   (optional) Title of block. When no value is given uses a random name.
+@@ -76,7 +76,7 @@ protected function setUp() {
+    *   (optional) Whether to save the block. Defaults to TRUE.
+    *
+    * @return \Drupal\block_content\Entity\BlockContent
+-   *   Created custom block.
++   *   Created block.
+    */
+   protected function createBlockContent($title = FALSE, $bundle = 'basic', $save = TRUE) {
+     $title = $title ?: $this->randomMachineName();
+@@ -92,7 +92,7 @@ protected function createBlockContent($title = FALSE, $bundle = 'basic', $save =
+   }
+ 
+   /**
+-   * Creates a custom block type (bundle).
++   * Creates a block type (bundle).
+    *
+    * @param string $label
+    *   The block type label.
+@@ -100,7 +100,7 @@ protected function createBlockContent($title = FALSE, $bundle = 'basic', $save =
+    *   Whether or not to create the body field
+    *
+    * @return \Drupal\block_content\Entity\BlockContentType
+-   *   Created custom block type.
++   *   Created block type.
+    */
+   protected function createBlockContentType($label, $create_body = FALSE) {
+     $bundle = BlockContentType::create([
+diff --git a/core/modules/block_content/src/Tests/Views/BlockContentTestBase.php b/core/modules/block_content/src/Tests/Views/BlockContentTestBase.php
+index 3ea2dba06c..436331724d 100644
+--- a/core/modules/block_content/src/Tests/Views/BlockContentTestBase.php
++++ b/core/modules/block_content/src/Tests/Views/BlockContentTestBase.php
+@@ -54,14 +54,14 @@ protected function setUp($import_test_views = TRUE) {
+   }
+ 
+   /**
+-   * Creates a custom block.
++   * Creates a block.
+    *
+    * @param array $settings
+    *   (optional) An associative array of settings for the block_content, as
+    *   used in entity_create().
+    *
+    * @return \Drupal\block_content\Entity\BlockContent
+-   *   Created custom block.
++   *   Created block.
+    */
+   protected function createBlockContent(array $settings = []) {
+     $status = 0;
+@@ -78,13 +78,13 @@ protected function createBlockContent(array $settings = []) {
+   }
+ 
+   /**
+-   * Creates a custom block type (bundle).
++   * Creates a block type (bundle).
+    *
+    * @param array $values
+    *   An array of settings to change from the defaults.
+    *
+    * @return \Drupal\block_content\Entity\BlockContentType
+-   *   Created custom block type.
++   *   Created block type.
+    */
+   protected function createBlockContentType(array $values = []) {
+     // Find a non-existent random type name.
+diff --git a/core/modules/block_content/templates/block-content-add-list.html.twig b/core/modules/block_content/templates/block-content-add-list.html.twig
+index 08104617c6..0f93c6c9bf 100644
+--- a/core/modules/block_content/templates/block-content-add-list.html.twig
++++ b/core/modules/block_content/templates/block-content-add-list.html.twig
+@@ -1,13 +1,13 @@
+ {#
+ /**
+  * @file
+- * Default theme implementation to present a list of custom block types.
++ * Default theme implementation to present a list of block types.
+  *
+  * Available variables:
+- * - types: A collection of all the available custom block types.
++ * - types: A collection of all the available block types.
+  *   Each block type contains the following:
+  *   - link: A link to add a block of this type.
+- *   - description: A description of this custom block type.
++ *   - description: A description of this block type.
+  *
+  * @see template_preprocess_block_content_add_list()
+  *
+diff --git a/core/modules/block_content/tests/modules/block_content_test/block_content_test.info.yml b/core/modules/block_content/tests/modules/block_content_test/block_content_test.info.yml
+index 16e4bc7c94..5f056f2786 100644
+--- a/core/modules/block_content/tests/modules/block_content_test/block_content_test.info.yml
++++ b/core/modules/block_content/tests/modules/block_content_test/block_content_test.info.yml
+@@ -1,6 +1,6 @@
+-name: "Custom Block module tests"
++name: "Block module tests"
+ type: module
+-description: "Support module for custom block related testing."
++description: "Support module for block related testing."
+ package: Testing
+ version: VERSION
+ core: 8.x
+diff --git a/core/modules/block_content/tests/modules/block_content_test/block_content_test.module b/core/modules/block_content/tests/modules/block_content_test/block_content_test.module
+index 0489a617b6..015e4abf74 100644
+--- a/core/modules/block_content/tests/modules/block_content_test/block_content_test.module
++++ b/core/modules/block_content/tests/modules/block_content_test/block_content_test.module
+@@ -2,9 +2,9 @@
+ 
+ /**
+  * @file
+- * A dummy module for testing custom block related hooks.
++ * A dummy module for testing block related hooks.
+  *
+- * This is a dummy module that implements custom block related hooks to test API
++ * This is a dummy module that implements block related hooks to test API
+  * interaction with the block_content module.
+  */
+ 
+diff --git a/core/modules/block_content/tests/src/Functional/BlockContentCacheTagsTest.php b/core/modules/block_content/tests/src/Functional/BlockContentCacheTagsTest.php
+index 59f111b965..ed311f7a20 100644
+--- a/core/modules/block_content/tests/src/Functional/BlockContentCacheTagsTest.php
++++ b/core/modules/block_content/tests/src/Functional/BlockContentCacheTagsTest.php
+@@ -11,7 +11,7 @@
+ use Symfony\Component\HttpFoundation\Request;
+ 
+ /**
+- * Tests the Custom Block entity's cache tags.
++ * Tests the Block entity's cache tags.
+  *
+  * @group block_content
+  */
+@@ -34,7 +34,7 @@ protected function createEntity() {
+     $block_content_type->save();
+     block_content_add_body_field($block_content_type->id());
+ 
+-    // Create a "Llama" custom block.
++    // Create a "Llama" block.
+     $block_content = BlockContent::create([
+       'info' => 'Llama',
+       'type' => 'basic',
+diff --git a/core/modules/block_content/tests/src/Functional/BlockContentCreationTest.php b/core/modules/block_content/tests/src/Functional/BlockContentCreationTest.php
+index 0f89b86e6a..a90c9a05cb 100644
+--- a/core/modules/block_content/tests/src/Functional/BlockContentCreationTest.php
++++ b/core/modules/block_content/tests/src/Functional/BlockContentCreationTest.php
+@@ -67,14 +67,14 @@ public function testBlockContentCreation() {
+       ->getStorage('block_content')
+       ->loadByProperties(['info' => $edit['info[0][value]']]);
+     $block = reset($blocks);
+-    $this->assertTrue($block, 'Custom Block found in database.');
++    $this->assertTrue($block, 'Block found in database.');
+ 
+     // Check that attempting to create another block with the same value for
+     // 'info' returns an error.
+     $this->drupalPostForm('block/add/basic', $edit, t('Save'));
+ 
+     // Check that the Basic block has been created.
+-    $this->assertRaw(format_string('A custom block with block description %value already exists.', [
++    $this->assertRaw(format_string('A block with block description %value already exists.', [
+       '%value' => $edit['info[0][value]']
+     ]));
+     $this->assertResponse(200);
+@@ -149,30 +149,30 @@ public function testBlockContentCreationMultipleViewModes() {
+       ->getStorage('block_content')
+       ->loadByProperties(['info' => $edit['info[0][value]']]);
+     $block = reset($blocks);
+-    $this->assertTrue($block, 'Custom Block found in database.');
++    $this->assertTrue($block, 'Block found in database.');
+ 
+     // Check that attempting to create another block with the same value for
+     // 'info' returns an error.
+     $this->drupalPostForm('block/add/basic', $edit, t('Save'));
+ 
+     // Check that the Basic block has been created.
+-    $this->assertRaw(format_string('A custom block with block description %value already exists.', [
++    $this->assertRaw(format_string('A block with block description %value already exists.', [
+       '%value' => $edit['info[0][value]']
+     ]));
+     $this->assertResponse(200);
+   }
+ 
+   /**
+-   * Create a default custom block.
++   * Create a default block.
+    *
+-   * Creates a custom block from defaults and ensures that the 'basic block'
++   * Creates a block from defaults and ensures that the 'basic block'
+    * type is being used.
+    */
+   public function testDefaultBlockContentCreation() {
+     $edit = [];
+     $edit['info[0][value]'] = $this->randomMachineName(8);
+     $edit['body[0][value]'] = $this->randomMachineName(16);
+-    // Don't pass the custom block type in the url so the default is forced.
++    // Don't pass the block type in the url so the default is forced.
+     $this->drupalPostForm('block/add', $edit, t('Save'));
+ 
+     // Check that the block has been created and that it is a basic block.
+@@ -186,7 +186,7 @@ public function testDefaultBlockContentCreation() {
+       ->getStorage('block_content')
+       ->loadByProperties(['info' => $edit['info[0][value]']]);
+     $block = reset($blocks);
+-    $this->assertTrue($block, 'Default Custom Block found in database.');
++    $this->assertTrue($block, 'Default Block found in database.');
+   }
+ 
+   /**
+@@ -261,7 +261,7 @@ public function testBlockDelete() {
+     $this->assertText(\Drupal::translation()->formatPlural(1, 'This will also remove 1 placed block instance.', 'This will also remove @count placed block instance.'));
+ 
+     $this->drupalPostForm(NULL, [], 'Delete');
+-    $this->assertRaw(t('The custom block %name has been deleted.', ['%name' => $edit['info[0][value]']]));
++    $this->assertRaw(t('The block %name has been deleted.', ['%name' => $edit['info[0][value]']]));
+ 
+     // Create another block and force the plugin cache to flush.
+     $edit2 = [];
+diff --git a/core/modules/block_content/tests/src/Functional/BlockContentListTest.php b/core/modules/block_content/tests/src/Functional/BlockContentListTest.php
+index aba60c366c..ecb75531b3 100644
+--- a/core/modules/block_content/tests/src/Functional/BlockContentListTest.php
++++ b/core/modules/block_content/tests/src/Functional/BlockContentListTest.php
+@@ -3,7 +3,7 @@
+ namespace Drupal\Tests\block_content\Functional;
+ 
+ /**
+- * Tests the listing of custom blocks.
++ * Tests the listing of blocks.
+  *
+  * Tests the fallback block content list when Views is disabled.
+  *
+@@ -21,14 +21,14 @@ class BlockContentListTest extends BlockContentTestBase {
+   public static $modules = ['block', 'block_content', 'config_translation'];
+ 
+   /**
+-   * Tests the custom block listing page.
++   * Tests the block listing page.
+    */
+   public function testListing() {
+     $this->drupalLogin($this->drupalCreateUser(['administer blocks', 'translate configuration']));
+     $this->drupalGet('admin/structure/block/block-content');
+ 
+     // Test for the page title.
+-    $this->assertTitle(t('Custom block library') . ' | Drupal');
++    $this->assertTitle(t('Block library') . ' | Drupal');
+ 
+     // Test for the table.
+     $element = $this->xpath('//div[@class="layout-content"]//table');
+@@ -47,7 +47,7 @@ public function testListing() {
+     $label = 'Antelope';
+     $new_label = 'Albatross';
+     // Add a new entity using the operations link.
+-    $link_text = t('Add custom block');
++    $link_text = t('Add block');
+     $this->assertLink($link_text);
+     $this->clickLink($link_text);
+     $this->assertResponse(200);
+@@ -78,7 +78,7 @@ public function testListing() {
+       $this->assertLinkByHref('block/' . $block->id());
+       $this->clickLink(t('Edit'));
+       $this->assertResponse(200);
+-      $this->assertTitle(strip_tags(t('Edit custom block %label', ['%label' => $label]) . ' | Drupal'));
++      $this->assertTitle(strip_tags(t('Edit block %label', ['%label' => $label]) . ' | Drupal'));
+       $edit = ['info[0][value]' => $new_label];
+       $this->drupalPostForm(NULL, $edit, t('Save'));
+     }
+@@ -88,22 +88,22 @@ public function testListing() {
+ 
+     // Confirm that once the user returns to the listing, the text of the label
+     // (versus elsewhere on the page).
+-    $this->assertFieldByXpath('//td', $new_label, 'Label found for updated custom block.');
++    $this->assertFieldByXpath('//td', $new_label, 'Label found for updated block.');
+ 
+     // Delete the added entity using the operations link.
+     $this->assertLinkByHref('block/' . $block->id() . '/delete');
+     $delete_text = t('Delete');
+     $this->clickLink($delete_text);
+     $this->assertResponse(200);
+-    $this->assertTitle(strip_tags(t('Are you sure you want to delete the custom block %label?', ['%label' => $new_label]) . ' | Drupal'));
++    $this->assertTitle(strip_tags(t('Are you sure you want to delete the block %label?', ['%label' => $new_label]) . ' | Drupal'));
+     $this->drupalPostForm(NULL, [], $delete_text);
+ 
+     // Verify that the text of the label and machine name does not appear in
+     // the list (though it may appear elsewhere on the page).
+-    $this->assertNoFieldByXpath('//td', $new_label, 'No label found for deleted custom block.');
++    $this->assertNoFieldByXpath('//td', $new_label, 'No label found for deleted block.');
+ 
+     // Confirm that the empty text is displayed.
+-    $this->assertText(t('There is no Custom block yet.'));
++    $this->assertText(t('There is no Block yet.'));
+   }
+ 
+ }
+diff --git a/core/modules/block_content/tests/src/Functional/BlockContentListViewsTest.php b/core/modules/block_content/tests/src/Functional/BlockContentListViewsTest.php
+index 1c623be82e..7c6199ba0f 100644
+--- a/core/modules/block_content/tests/src/Functional/BlockContentListViewsTest.php
++++ b/core/modules/block_content/tests/src/Functional/BlockContentListViewsTest.php
+@@ -3,7 +3,7 @@
+ namespace Drupal\Tests\block_content\Functional;
+ 
+ /**
+- * Tests the Views-powered listing of custom blocks.
++ * Tests the Views-powered listing of blocks.
+  *
+  * @group block_content
+  * @see \Drupal\block\BlockContentListBuilder
+@@ -19,14 +19,14 @@ class BlockContentListViewsTest extends BlockContentTestBase {
+   public static $modules = ['block', 'block_content', 'config_translation', 'views'];
+ 
+   /**
+-   * Tests the custom block listing page.
++   * Tests the block listing page.
+    */
+   public function testListing() {
+     $this->drupalLogin($this->drupalCreateUser(['administer blocks', 'translate configuration']));
+     $this->drupalGet('admin/structure/block/block-content');
+ 
+     // Test for the page title.
+-    $this->assertTitle(t('Custom block library') . ' | Drupal');
++    $this->assertTitle(t('Block library') . ' | Drupal');
+ 
+     // Test for the exposed filters.
+     $this->assertFieldByName('info');
+@@ -54,7 +54,7 @@ public function testListing() {
+     $label = 'Antelope';
+     $new_label = 'Albatross';
+     // Add a new entity using the operations link.
+-    $link_text = t('Add custom block');
++    $link_text = t('Add block');
+     $this->assertLink($link_text);
+     $this->clickLink($link_text);
+     $this->assertResponse(200);
+@@ -85,7 +85,7 @@ public function testListing() {
+       $this->assertLinkByHref('block/' . $block->id());
+       $this->clickLink(t('Edit'));
+       $this->assertResponse(200);
+-      $this->assertTitle(strip_tags(t('Edit custom block %label', ['%label' => $label]) . ' | Drupal'));
++      $this->assertTitle(strip_tags(t('Edit block %label', ['%label' => $label]) . ' | Drupal'));
+       $edit = ['info[0][value]' => $new_label];
+       $this->drupalPostForm(NULL, $edit, t('Save'));
+     }
+@@ -95,23 +95,23 @@ public function testListing() {
+ 
+     // Confirm that once the user returns to the listing, the text of the label
+     // (versus elsewhere on the page).
+-    $this->assertFieldByXpath('//td/a', $new_label, 'Label found for updated custom block.');
++    $this->assertFieldByXpath('//td/a', $new_label, 'Label found for updated block.');
+ 
+     // Delete the added entity using the operations link.
+     $this->assertLinkByHref('block/' . $block->id() . '/delete');
+     $delete_text = t('Delete');
+     $this->clickLink($delete_text);
+     $this->assertResponse(200);
+-    $this->assertTitle(strip_tags(t('Are you sure you want to delete the custom block %label?', ['%label' => $new_label]) . ' | Drupal'));
++    $this->assertTitle(strip_tags(t('Are you sure you want to delete the block %label?', ['%label' => $new_label]) . ' | Drupal'));
+     $this->drupalPostForm(NULL, [], $delete_text);
+ 
+     // Verify that the text of the label and machine name does not appear in
+     // the list (though it may appear elsewhere on the page).
+-    $this->assertNoFieldByXpath('//td', $new_label, 'No label found for deleted custom block.');
++    $this->assertNoFieldByXpath('//td', $new_label, 'No label found for deleted block.');
+ 
+     // Confirm that the empty text is displayed.
+-    $this->assertText('There are no custom blocks available.');
+-    $this->assertLink('custom block');
++    $this->assertText('There are no blocks available.');
++    $this->assertLink('block');
+   }
+ 
+ }
+diff --git a/core/modules/block_content/tests/src/Functional/BlockContentSaveTest.php b/core/modules/block_content/tests/src/Functional/BlockContentSaveTest.php
+index 0f7ae5a2e6..1717d228a0 100644
+--- a/core/modules/block_content/tests/src/Functional/BlockContentSaveTest.php
++++ b/core/modules/block_content/tests/src/Functional/BlockContentSaveTest.php
+@@ -28,10 +28,10 @@ protected function setUp() {
+   }
+ 
+   /**
+-   * Checks whether custom block IDs are saved properly during an import.
++   * Checks whether block IDs are saved properly during an import.
+    */
+   public function testImport() {
+-    // Custom block ID must be a number that is not in the database.
++    // Block ID must be a number that is not in the database.
+     $max_id = db_query('SELECT MAX(id) FROM {block_content}')->fetchField();
+     $test_id = $max_id + mt_rand(1000, 1000000);
+     $info = $this->randomMachineName(8);
+@@ -50,7 +50,7 @@ public function testImport() {
+ 
+     // Test the import saved.
+     $block_by_id = BlockContent::load($test_id);
+-    $this->assertTrue($block_by_id, 'Custom block load by block ID.');
++    $this->assertTrue($block_by_id, 'Block load by block ID.');
+     $this->assertIdentical($block_by_id->body->value, $block_array['body']['value']);
+   }
+ 
+@@ -76,7 +76,7 @@ public function testDeterminingChanges() {
+     // block_content_test_block_content_update() determine changes and change
+     // the title as well as programmatically set the 'changed' timestamp.
+     $this->assertEqual($block->label(), 'updated_presave_update', 'Changes have been determined.');
+-    $this->assertEqual($block->getChangedTime(), 979534800, 'Saving a custom block uses "changed" timestamp set in presave hook.');
++    $this->assertEqual($block->getChangedTime(), 979534800, 'Saving a block uses "changed" timestamp set in presave hook.');
+ 
+     // Test the static block load cache to be cleared.
+     $block = BlockContent::load($block->id());
+@@ -96,7 +96,7 @@ public function testBlockContentSaveOnInsert() {
+     // block_content_test_block_content_insert() triggers a save on insert if the
+     // title equals 'new'.
+     $block = $this->createBlockContent('new');
+-    $this->assertEqual($block->label(), 'BlockContent ' . $block->id(), 'Custom block saved on block insert.');
++    $this->assertEqual($block->label(), 'BlockContent ' . $block->id(), 'Block saved on block insert.');
+   }
+ 
+ }
+diff --git a/core/modules/block_content/tests/src/Functional/BlockContentTestBase.php b/core/modules/block_content/tests/src/Functional/BlockContentTestBase.php
+index 1fdd0ef561..2ad431af76 100644
+--- a/core/modules/block_content/tests/src/Functional/BlockContentTestBase.php
++++ b/core/modules/block_content/tests/src/Functional/BlockContentTestBase.php
+@@ -62,7 +62,7 @@ protected function setUp() {
+   }
+ 
+   /**
+-   * Creates a custom block.
++   * Creates a block.
+    *
+    * @param bool|string $title
+    *   (optional) Title of block. When no value is given uses a random name.
+@@ -73,7 +73,7 @@ protected function setUp() {
+    *   (optional) Whether to save the block. Defaults to TRUE.
+    *
+    * @return \Drupal\block_content\Entity\BlockContent
+-   *   Created custom block.
++   *   Created block.
+    */
+   protected function createBlockContent($title = FALSE, $bundle = 'basic', $save = TRUE) {
+     $title = $title ?: $this->randomMachineName();
+@@ -89,7 +89,7 @@ protected function createBlockContent($title = FALSE, $bundle = 'basic', $save =
+   }
+ 
+   /**
+-   * Creates a custom block type (bundle).
++   * Creates a block type (bundle).
+    *
+    * @param string $label
+    *   The block type label.
+@@ -97,7 +97,7 @@ protected function createBlockContent($title = FALSE, $bundle = 'basic', $save =
+    *   Whether or not to create the body field
+    *
+    * @return \Drupal\block_content\Entity\BlockContentType
+-   *   Created custom block type.
++   *   Created block type.
+    */
+   protected function createBlockContentType($label, $create_body = FALSE) {
+     $bundle = BlockContentType::create([
+diff --git a/core/modules/block_content/tests/src/Functional/BlockContentTranslationUITest.php b/core/modules/block_content/tests/src/Functional/BlockContentTranslationUITest.php
+index c200252b81..5c493829ce 100644
+--- a/core/modules/block_content/tests/src/Functional/BlockContentTranslationUITest.php
++++ b/core/modules/block_content/tests/src/Functional/BlockContentTranslationUITest.php
+@@ -78,7 +78,7 @@ public function getTranslatorPermissions() {
+   }
+ 
+   /**
+-   * Creates a custom block.
++   * Creates a block.
+    *
+    * @param bool|string $title
+    *   (optional) Title of block. When no value is given uses a random name.
+@@ -88,7 +88,7 @@ public function getTranslatorPermissions() {
+    *   $this->bundle. Defaults to FALSE.
+    *
+    * @return \Drupal\block_content\Entity\BlockContent
+-   *   Created custom block.
++   *   Created block.
+    */
+   protected function createBlockContent($title = FALSE, $bundle = FALSE) {
+     $title = $title ?: $this->randomMachineName();
+diff --git a/core/modules/block_content/tests/src/Functional/BlockContentTypeTest.php b/core/modules/block_content/tests/src/Functional/BlockContentTypeTest.php
+index 6c76a90278..5917f9b78f 100644
+--- a/core/modules/block_content/tests/src/Functional/BlockContentTypeTest.php
++++ b/core/modules/block_content/tests/src/Functional/BlockContentTypeTest.php
+@@ -8,7 +8,7 @@
+ use Drupal\Tests\system\Functional\Menu\AssertBreadcrumbTrait;
+ 
+ /**
+- * Ensures that custom block type functions work correctly.
++ * Ensures that block type functions work correctly.
+  *
+  * @group block_content
+  */
+@@ -115,13 +115,13 @@ public function testBlockContentTypeEditing() {
+       'label' => 'Bar',
+     ];
+     $this->drupalGet('admin/structure/block/block-content/manage/basic');
+-    $this->assertTitle(format_string('Edit @type custom block type | Drupal', ['@type' => 'basic']));
++    $this->assertTitle(format_string('Edit @type block type | Drupal', ['@type' => 'basic']));
+     $this->drupalPostForm(NULL, $edit, t('Save'));
+     $front_page_path = Url::fromRoute('<front>')->toString();
+     $this->assertBreadcrumb('admin/structure/block/block-content/manage/basic/fields', [
+       $front_page_path => 'Home',
+       'admin/structure/block' => 'Block layout',
+-      'admin/structure/block/block-content' => 'Custom block library',
++      'admin/structure/block/block-content' => 'Block library',
+       'admin/structure/block/block-content/manage/basic' => 'Bar',
+     ]);
+     \Drupal::entityManager()->clearCachedFieldDefinitions();
+@@ -157,7 +157,7 @@ public function testBlockContentTypeDeletion() {
+     // Attempt to delete the block type, which should not be allowed.
+     $this->drupalGet('admin/structure/block/block-content/manage/' . $type->id() . '/delete');
+     $this->assertRaw(
+-      t('%label is used by 1 custom block on your site. You can not remove this block type until you have removed all of the %label blocks.', ['%label' => $type->label()]),
++      t('%label is used by 1 block on your site. You can not remove this block type until you have removed all of the %label blocks.', ['%label' => $type->label()]),
+       'The block type will not be deleted until all blocks of that type are removed.'
+     );
+     $this->assertNoText(t('This action cannot be undone.'), 'The block type deletion confirmation form is not available.');
+@@ -167,10 +167,10 @@ public function testBlockContentTypeDeletion() {
+     // Attempt to delete the block type, which should now be allowed.
+     $this->drupalGet('admin/structure/block/block-content/manage/' . $type->id() . '/delete');
+     $this->assertRaw(
+-      t('Are you sure you want to delete the custom block type %type?', ['%type' => $type->id()]),
++      t('Are you sure you want to delete the block type %type?', ['%type' => $type->id()]),
+       'The block type is available for deletion.'
+     );
+-    $this->assertText(t('This action cannot be undone.'), 'The custom block type deletion confirmation form is available.');
++    $this->assertText(t('This action cannot be undone.'), 'The block type deletion confirmation form is available.');
+   }
+ 
+   /**
+@@ -185,7 +185,7 @@ public function testsBlockContentAddTypes() {
+     $type = $this->createBlockContentType('foo');
+     $type = $this->createBlockContentType('bar');
+ 
+-    // Get the custom block storage.
++    // Get the block storage.
+     $storage = $this->container
+       ->get('entity.manager')
+       ->getStorage('block_content');
+@@ -205,7 +205,7 @@ public function testsBlockContentAddTypes() {
+         $path = $theme == $default_theme ? 'admin/structure/block' : "admin/structure/block/list/$theme";
+         $this->drupalGet($path);
+         $this->clickLink('Place block');
+-        $this->clickLink(t('Add custom block'));
++        $this->clickLink(t('Add block'));
+         // The seven theme has markup inside the link, we cannot use clickLink().
+         if ($default_theme == 'seven') {
+           $options = $theme != $default_theme ? ['query' => ['theme' => $theme]] : [];
+@@ -231,10 +231,10 @@ public function testsBlockContentAddTypes() {
+       }
+     }
+ 
+-    // Test that adding a block from the 'custom blocks list' doesn't send you
++    // Test that adding a block from the 'blocks list' doesn't send you
+     // to the block configure form.
+     $this->drupalGet('admin/structure/block/block-content');
+-    $this->clickLink(t('Add custom block'));
++    $this->clickLink(t('Add block'));
+     $this->clickLink('foo');
+     $edit = ['info[0][value]' => $this->randomMachineName(8)];
+     $this->drupalPostForm(NULL, $edit, t('Save'));
+diff --git a/core/modules/block_content/tests/src/Functional/BlockContentValidationTest.php b/core/modules/block_content/tests/src/Functional/BlockContentValidationTest.php
+index bfa84082c1..c60cb02f29 100644
+--- a/core/modules/block_content/tests/src/Functional/BlockContentValidationTest.php
++++ b/core/modules/block_content/tests/src/Functional/BlockContentValidationTest.php
+@@ -32,7 +32,7 @@ public function testValidation() {
+     // Make sure the violation is on the info property
+     $this->assertEqual($violations[0]->getPropertyPath(), 'info');
+     // Make sure the message is correct.
+-    $this->assertEqual($violations[0]->getMessage(), format_string('A custom block with block description %value already exists.', [
++    $this->assertEqual($violations[0]->getMessage(), format_string('A block with block description %value already exists.', [
+       '%value' => $block->label(),
+     ]));
+   }
+diff --git a/core/modules/block_content/tests/src/Functional/PageEditTest.php b/core/modules/block_content/tests/src/Functional/PageEditTest.php
+index 41638bd2bc..d98c24e62a 100644
+--- a/core/modules/block_content/tests/src/Functional/PageEditTest.php
++++ b/core/modules/block_content/tests/src/Functional/PageEditTest.php
+@@ -35,7 +35,7 @@ public function testPageEdit() {
+     // Check that the block exists in the database.
+     $blocks = \Drupal::entityQuery('block_content')->condition('info', $edit['info[0][value]'])->execute();
+     $block = BlockContent::load(reset($blocks));
+-    $this->assertTrue($block, 'Custom block found in database.');
++    $this->assertTrue($block, 'Block found in database.');
+ 
+     // Load the edit page.
+     $this->drupalGet('block/' . $block->id());
+@@ -65,7 +65,7 @@ public function testPageEdit() {
+     // Test deleting the block.
+     $this->drupalGet("block/" . $revised_block->id());
+     $this->clickLink(t('Delete'));
+-    $this->assertText(format_string('Are you sure you want to delete the custom block @label?', ['@label' => $revised_block->label()]));
++    $this->assertText(format_string('Are you sure you want to delete the block @label?', ['@label' => $revised_block->label()]));
+   }
+ 
+ }
+diff --git a/core/modules/block_content/tests/src/Functional/Views/BlockContentRedirectTest.php b/core/modules/block_content/tests/src/Functional/Views/BlockContentRedirectTest.php
+index 10ce140e96..153de77648 100644
+--- a/core/modules/block_content/tests/src/Functional/Views/BlockContentRedirectTest.php
++++ b/core/modules/block_content/tests/src/Functional/Views/BlockContentRedirectTest.php
+@@ -30,8 +30,8 @@ public function testRedirectDestination() {
+     $this->drupalLogin($this->drupalCreateUser(['administer blocks']));
+     $this->drupalGet('admin/structure/block/block-content');
+ 
+-    // Create a custom block.
+-    $this->clickLink('custom block');
++    // Create a block.
++    $this->clickLink('block');
+     $edit = [];
+     $edit['info[0][value]'] = 'Test redirect destination';
+     $edit['body[0][value]'] = $this->randomMachineName(16);
+diff --git a/core/modules/block_content/tests/src/Functional/Views/BlockContentTestBase.php b/core/modules/block_content/tests/src/Functional/Views/BlockContentTestBase.php
+index ffce588605..956ffd8e76 100644
+--- a/core/modules/block_content/tests/src/Functional/Views/BlockContentTestBase.php
++++ b/core/modules/block_content/tests/src/Functional/Views/BlockContentTestBase.php
+@@ -49,14 +49,14 @@ protected function setUp($import_test_views = TRUE) {
+   }
+ 
+   /**
+-   * Creates a custom block.
++   * Creates a block.
+    *
+    * @param array $settings
+    *   (optional) An associative array of settings for the block_content, as
+    *   used in entity_create().
+    *
+    * @return \Drupal\block_content\Entity\BlockContent
+-   *   Created custom block.
++   *   Created block.
+    */
+   protected function createBlockContent(array $settings = []) {
+     $status = 0;
+@@ -73,13 +73,13 @@ protected function createBlockContent(array $settings = []) {
+   }
+ 
+   /**
+-   * Creates a custom block type (bundle).
++   * Creates a block type (bundle).
+    *
+    * @param array $values
+    *   An array of settings to change from the defaults.
+    *
+    * @return \Drupal\block_content\Entity\BlockContentType
+-   *   Created custom block type.
++   *   Created block type.
+    */
+   protected function createBlockContentType(array $values = []) {
+     // Find a non-existent random type name.
+diff --git a/core/modules/block_content/tests/src/Kernel/Migrate/MigrateBlockContentBodyFieldTest.php b/core/modules/block_content/tests/src/Kernel/Migrate/MigrateBlockContentBodyFieldTest.php
+index 7d343738c9..f34f6d1b17 100644
+--- a/core/modules/block_content/tests/src/Kernel/Migrate/MigrateBlockContentBodyFieldTest.php
++++ b/core/modules/block_content/tests/src/Kernel/Migrate/MigrateBlockContentBodyFieldTest.php
+@@ -9,7 +9,7 @@
+ use Drupal\Tests\migrate_drupal\Kernel\d7\MigrateDrupal7TestBase;
+ 
+ /**
+- * Attaches a body field to the custom block type.
++ * Attaches a body field to the block type.
+  *
+  * @group block_content
+  */
+diff --git a/core/modules/block_content/tests/src/Kernel/Migrate/d6/MigrateBlockContentTest.php b/core/modules/block_content/tests/src/Kernel/Migrate/d6/MigrateBlockContentTest.php
+index 87e6fac893..61be380871 100644
+--- a/core/modules/block_content/tests/src/Kernel/Migrate/d6/MigrateBlockContentTest.php
++++ b/core/modules/block_content/tests/src/Kernel/Migrate/d6/MigrateBlockContentTest.php
+@@ -6,7 +6,7 @@
+ use Drupal\Tests\migrate_drupal\Kernel\d6\MigrateDrupal6TestBase;
+ 
+ /**
+- * Upgrade custom blocks.
++ * Upgrade blocks.
+  *
+  * @group migrate_drupal_6
+  */
+@@ -34,7 +34,7 @@ protected function setUp() {
+   }
+ 
+   /**
+-   * Tests the Drupal 6 custom block to Drupal 8 migration.
++   * Tests the Drupal 6 block to Drupal 8 migration.
+    */
+   public function testBlockMigration() {
+     /** @var \Drupal\block_content\Entity\BlockContent $block */
+@@ -42,14 +42,14 @@ public function testBlockMigration() {
+     $this->assertIdentical('My block 1', $block->label());
+     $this->assertTrue(REQUEST_TIME <= $block->getChangedTime() && $block->getChangedTime() <= time());
+     $this->assertIdentical('en', $block->language()->getId());
+-    $this->assertIdentical('<h3>My first custom block body</h3>', $block->body->value);
++    $this->assertIdentical('<h3>My first block body</h3>', $block->body->value);
+     $this->assertIdentical('full_html', $block->body->format);
+ 
+     $block = BlockContent::load(2);
+     $this->assertIdentical('My block 2', $block->label());
+     $this->assertTrue(REQUEST_TIME <= $block->getChangedTime() && $block->getChangedTime() <= time());
+     $this->assertIdentical('en', $block->language()->getId());
+-    $this->assertIdentical('<h3>My second custom block body</h3>', $block->body->value);
++    $this->assertIdentical('<h3>My second block body</h3>', $block->body->value);
+     $this->assertIdentical('full_html', $block->body->format);
+   }
+ 
+diff --git a/core/modules/block_content/tests/src/Kernel/Migrate/d7/MigrateCustomBlockTest.php b/core/modules/block_content/tests/src/Kernel/Migrate/d7/MigrateCustomBlockTest.php
+index 706a7ccf05..ace243e405 100644
+--- a/core/modules/block_content/tests/src/Kernel/Migrate/d7/MigrateCustomBlockTest.php
++++ b/core/modules/block_content/tests/src/Kernel/Migrate/d7/MigrateCustomBlockTest.php
+@@ -7,7 +7,7 @@
+ use Drupal\Tests\migrate_drupal\Kernel\d7\MigrateDrupal7TestBase;
+ 
+ /**
+- * Tests migration of custom blocks.
++ * Tests migration of blocks.
+  *
+  * @group block_content
+  */
+@@ -36,7 +36,7 @@ protected function setUp() {
+   }
+ 
+   /**
+-   * Tests migration of custom blocks from Drupal 7 to Drupal 8.
++   * Tests migration of blocks from Drupal 7 to Drupal 8.
+    */
+   public function testCustomBlockMigration() {
+     $block = BlockContent::load(1);
+diff --git a/core/modules/book/src/Form/BookAdminEditForm.php b/core/modules/book/src/Form/BookAdminEditForm.php
+index 66e717eaba..0dbd6be106 100644
+--- a/core/modules/book/src/Form/BookAdminEditForm.php
++++ b/core/modules/book/src/Form/BookAdminEditForm.php
+@@ -38,7 +38,7 @@ class BookAdminEditForm extends FormBase {
+    * Constructs a new BookAdminEditForm.
+    *
+    * @param \Drupal\Core\Entity\EntityStorageInterface $node_storage
+-   *   The custom block storage.
++   *   The block storage.
+    * @param \Drupal\book\BookManagerInterface $book_manager
+    *   The book manager.
+    */
+diff --git a/core/modules/config_translation/tests/src/Functional/ConfigTranslationListUiTest.php b/core/modules/config_translation/tests/src/Functional/ConfigTranslationListUiTest.php
+index 586d197579..0c312921ac 100644
+--- a/core/modules/config_translation/tests/src/Functional/ConfigTranslationListUiTest.php
++++ b/core/modules/config_translation/tests/src/Functional/ConfigTranslationListUiTest.php
+@@ -181,10 +181,10 @@ protected function doVocabularyListTest() {
+   }
+ 
+   /**
+-   * Tests the custom block listing for the translate operation.
++   * Tests the block listing for the translate operation.
+    */
+   public function doCustomContentTypeListTest() {
+-    // Create a test custom block type to decouple looking for translate
++    // Create a test block type to decouple looking for translate
+     // operations link so this does not test more than necessary.
+     $block_content_type = BlockContentType::create([
+       'id' => Unicode::strtolower($this->randomMachineName(16)),
+@@ -193,11 +193,11 @@ public function doCustomContentTypeListTest() {
+     ]);
+     $block_content_type->save();
+ 
+-    // Get the custom block type listing.
++    // Get the block type listing.
+     $this->drupalGet('admin/structure/block/block-content/types');
+ 
+     $translate_link = 'admin/structure/block/block-content/manage/' . $block_content_type->id() . '/translate';
+-    // Test if the link to translate the custom block type is on the page.
++    // Test if the link to translate the block type is on the page.
+     $this->assertLinkByHref($translate_link);
+ 
+     // Test if the link to translate actually goes to the translate page.
+diff --git a/core/modules/content_moderation/content_moderation.module b/core/modules/content_moderation/content_moderation.module
+index 4b07e45790..2501096289 100644
+--- a/core/modules/content_moderation/content_moderation.module
++++ b/core/modules/content_moderation/content_moderation.module
+@@ -40,7 +40,7 @@ function content_moderation_help($route_name, RouteMatchInterface $route_match)
+       $output .= '<h3>' . t('Uses') . '</h3>';
+       $output .= '<dl>';
+       $output .= '<dt>' . t('Applying workflows') . '</dt>';
+-      $output .= '<dd>' . t('Content Moderation allows you to apply <a href=":workflows">Workflows</a> to content, custom blocks, and other <a href=":field_help" title="Field module help, with background on content entities">content entities</a>, to provide more fine-grained publishing options. For example, a Basic page might have states such as Draft and Published, with allowed transitions such as Draft to Published (making the current revision "live"), and Published to Draft (making a new draft revision of published content).', [':workflows' => Url::fromRoute('help.page', ['name' => 'workflows'])->toString(), ':field_help' => Url::fromRoute('help.page', ['name' => 'field'])->toString()]) . '</dd>';
++      $output .= '<dd>' . t('Content Moderation allows you to apply <a href=":workflows">Workflows</a> to content, blocks, and other <a href=":field_help" title="Field module help, with background on content entities">content entities</a>, to provide more fine-grained publishing options. For example, a Basic page might have states such as Draft and Published, with allowed transitions such as Draft to Published (making the current revision "live"), and Published to Draft (making a new draft revision of published content).', [':workflows' => Url::fromRoute('help.page', ['name' => 'workflows'])->toString(), ':field_help' => Url::fromRoute('help.page', ['name' => 'field'])->toString()]) . '</dd>';
+       if (\Drupal::moduleHandler()->moduleExists('views')) {
+         $moderated_content_view = View::load('moderated_content');
+         if (isset($moderated_content_view) && $moderated_content_view->status() === TRUE) {
+diff --git a/core/modules/content_moderation/tests/src/Functional/ModerationStateBlockTest.php b/core/modules/content_moderation/tests/src/Functional/ModerationStateBlockTest.php
+index 8b02848a30..59beed5bd0 100644
+--- a/core/modules/content_moderation/tests/src/Functional/ModerationStateBlockTest.php
++++ b/core/modules/content_moderation/tests/src/Functional/ModerationStateBlockTest.php
+@@ -31,7 +31,7 @@ protected function setUp() {
+   }
+ 
+   /**
+-   * Tests moderating custom blocks.
++   * Tests moderating blocks.
+    *
+    * Blocks and any non-node-type-entities do not have a concept of
+    * "published". As such, we must use the "default revision" to know what is
+@@ -51,11 +51,11 @@ protected function setUp() {
+   public function testCustomBlockModeration() {
+     $this->drupalLogin($this->rootUser);
+ 
+-    // Enable moderation for custom blocks.
++    // Enable moderation for blocks.
+     $edit['bundles[basic]'] = TRUE;
+     $this->drupalPostForm('admin/config/workflow/workflows/manage/editorial/type/block_content', $edit, t('Save'));
+ 
+-    // Create a custom block at block/add and save it as draft.
++    // Create a block at block/add and save it as draft.
+     $body = 'Body of moderated block';
+     $edit = [
+       'info[0][value]' => 'Moderated block',
+diff --git a/core/modules/content_translation/content_translation.module b/core/modules/content_translation/content_translation.module
+index cd8b27fdac..9ebf66ea6e 100644
+--- a/core/modules/content_translation/content_translation.module
++++ b/core/modules/content_translation/content_translation.module
+@@ -25,7 +25,7 @@ function content_translation_help($route_name, RouteMatchInterface $route_match)
+     case 'help.page.content_translation':
+       $output = '';
+       $output .= '<h3>' . t('About') . '</h3>';
+-      $output .= '<p>' . t('The Content Translation module allows you to translate content, comments, custom blocks, taxonomy terms, users and other <a href=":field_help" title="Field module help, with background on content entities">content entities</a>. Together with the modules <a href=":language">Language</a>, <a href=":config-trans">Configuration Translation</a>, and <a href=":locale">Interface Translation</a>, it allows you to build multilingual websites. For more information, see the <a href=":translation-entity">online documentation for the Content Translation module</a>.', [':locale' => (\Drupal::moduleHandler()->moduleExists('locale')) ? \Drupal::url('help.page', ['name' => 'locale']) : '#', ':config-trans' => (\Drupal::moduleHandler()->moduleExists('config_translation')) ? \Drupal::url('help.page', ['name' => 'config_translation']) : '#', ':language' => \Drupal::url('help.page', ['name' => 'language']), ':translation-entity' => 'https://www.drupal.org/documentation/modules/translation', ':field_help' => \Drupal::url('help.page', ['name' => 'field'])]) . '</p>';
++      $output .= '<p>' . t('The Content Translation module allows you to translate content, comments, blocks, taxonomy terms, users and other <a href=":field_help" title="Field module help, with background on content entities">content entities</a>. Together with the modules <a href=":language">Language</a>, <a href=":config-trans">Configuration Translation</a>, and <a href=":locale">Interface Translation</a>, it allows you to build multilingual websites. For more information, see the <a href=":translation-entity">online documentation for the Content Translation module</a>.', [':locale' => (\Drupal::moduleHandler()->moduleExists('locale')) ? \Drupal::url('help.page', ['name' => 'locale']) : '#', ':config-trans' => (\Drupal::moduleHandler()->moduleExists('config_translation')) ? \Drupal::url('help.page', ['name' => 'config_translation']) : '#', ':language' => \Drupal::url('help.page', ['name' => 'language']), ':translation-entity' => 'https://www.drupal.org/documentation/modules/translation', ':field_help' => \Drupal::url('help.page', ['name' => 'field'])]) . '</p>';
+       $output .= '<h3>' . t('Uses') . '</h3>';
+       $output .= '<dl>';
+       $output .= '<dt>' . t('Enabling translation') . '</dt>';
+diff --git a/core/modules/field/field.module b/core/modules/field/field.module
+index 14340b8bf0..b0dc33a05e 100644
+--- a/core/modules/field/field.module
++++ b/core/modules/field/field.module
+@@ -74,7 +74,7 @@ function field_help($route_name, RouteMatchInterface $route_match) {
+       $output .= '<h3>' . t('Terminology') . '</h3>';
+       $output .= '<dl>';
+       $output .= '<dt>' . t('Entities and entity types') . '</dt>';
+-      $output .= '<dd>' . t("The website's content and configuration is managed using <em>entities</em>, which are grouped into <em>entity types</em>. <em>Content entity types</em> are the entity types for site content (such as the main site content, comments, custom blocks, taxonomy terms, and user accounts). <em>Configuration entity types</em> are used to store configuration information for your site, such as individual views in the Views module, and settings for your main site content types.") . '</dd>';
++      $output .= '<dd>' . t("The website's content and configuration is managed using <em>entities</em>, which are grouped into <em>entity types</em>. <em>Content entity types</em> are the entity types for site content (such as the main site content, comments, blocks, taxonomy terms, and user accounts). <em>Configuration entity types</em> are used to store configuration information for your site, such as individual views in the Views module, and settings for your main site content types.") . '</dd>';
+       $output .= '<dt>' . t('Entity sub-types') . '</dt>';
+       $output .= '<dd>' . t('Some content entity types are further grouped into sub-types (for example, you could have article and page content types within the main site content entity type, and tag and category vocabularies within the taxonomy term entity type); other entity types, such as user accounts, do not have sub-types. Programmers use the term <em>bundle</em> for entity sub-types.') . '</dd>';
+       $output .= '<dt>' . t('Fields and field types') . '</dt>';
+diff --git a/core/modules/field_ui/field_ui.module b/core/modules/field_ui/field_ui.module
+index 79b3f151a5..8f936af7d4 100644
+--- a/core/modules/field_ui/field_ui.module
++++ b/core/modules/field_ui/field_ui.module
+@@ -28,7 +28,7 @@ function field_ui_help($route_name, RouteMatchInterface $route_match) {
+       $output .= '<dt>' . t('Creating a field') . '</dt>';
+       $output .= '<dd>' . t('On the <em>Manage fields</em> page for your entity type or sub-type, you can add, configure, and delete fields for that entity type or sub-type. Each field has a <em>machine name</em>, which is used internally to identify the field and must be unique across an entity type; once a field is created, you cannot change the machine name. Most fields have two types of settings. The field-level settings depend on the field type, and affect how the data in the field is stored. Once they are set, they can no longer be changed; examples include how many data values are allowed for the field and where files are stored. The sub-type-level settings are specific to each entity sub-type the field is used on, and they can be changed later; examples include the field label, help text, default value, and whether the field is required or not. You can return to these settings by choosing the <em>Edit</em> link for the field from the <em>Manage fields</em> page.');
+       $output .= '<dt>' . t('Re-using fields') . '</dt>';
+-      $output .= '<dd>' . t('Once you have created a field, you can use it again in other sub-types of the same entity type. For instance, if you create a field for the article content type, you can also use it for the page content type, but you cannot use it for custom blocks or taxonomy terms. If there are fields available for re-use, after clicking <em>Add field</em> from the <em>Manage fields</em> page, you will see a list of available fields for re-use. After selecting a field for re-use, you can configure the sub-type-level settings.') . '</dd>';
++      $output .= '<dd>' . t('Once you have created a field, you can use it again in other sub-types of the same entity type. For instance, if you create a field for the article content type, you can also use it for the page content type, but you cannot use it for blocks or taxonomy terms. If there are fields available for re-use, after clicking <em>Add field</em> from the <em>Manage fields</em> page, you will see a list of available fields for re-use. After selecting a field for re-use, you can configure the sub-type-level settings.') . '</dd>';
+       $output .= '<dt>' . t('Configuring field editing') . '</dt>';
+       $output .= '<dd>' . t('On the <em>Manage form display</em> page of your entity type or sub-type, you can configure how the field data is edited by default and in each form mode. If your entity type has multiple form modes (on most sites, most entities do not), you can toggle between the form modes at the top of the page, and you can toggle whether each form mode uses the default settings or custom settings in the <em>Custom display settings</em> section. For each field in each form mode, you can select the widget to use for editing; some widgets have additional configuration options, such as the size for a text field, and these can be edited using the Edit button (which looks like a wheel). You can also change the order of the fields on the form. You can exclude a field from a form by choosing <em>Hidden</em> from the widget drop-down list, or by dragging it into the <em>Disabled</em> section.') . '</dd>';
+       $output .= '<dt>' . t('Configuring field display') . '</dt>';
+diff --git a/core/modules/help/tests/src/Functional/HelpTest.php b/core/modules/help/tests/src/Functional/HelpTest.php
+index dff11ef173..3c37a14b1c 100644
+--- a/core/modules/help/tests/src/Functional/HelpTest.php
++++ b/core/modules/help/tests/src/Functional/HelpTest.php
+@@ -91,7 +91,7 @@ public function testHelp() {
+     $page_text = $this->getTextContent();
+     $start = strpos($page_text, 'Module overviews');
+     $pos = $start;
+-    $list = ['Block', 'Color', 'Custom Block', 'History', 'Text Editor'];
++    $list = ['Block', 'Color', 'Block', 'History', 'Text Editor'];
+     foreach ($list as $name) {
+       $this->assertLink($name);
+       $new_pos = strpos($page_text, $name, $start);
+diff --git a/core/modules/migrate_drupal/tests/fixtures/drupal6.php b/core/modules/migrate_drupal/tests/fixtures/drupal6.php
+index ea4eee69b2..af9e281d9a 100644
+--- a/core/modules/migrate_drupal/tests/fixtures/drupal6.php
++++ b/core/modules/migrate_drupal/tests/fixtures/drupal6.php
+@@ -1230,13 +1230,13 @@
+ ))
+ ->values(array(
+   'bid' => '1',
+-  'body' => '<h3>My first custom block body</h3>',
++  'body' => '<h3>My first block body</h3>',
+   'info' => 'My block 1',
+   'format' => '2',
+ ))
+ ->values(array(
+   'bid' => '2',
+-  'body' => '<h3>My second custom block body</h3>',
++  'body' => '<h3>My second block body</h3>',
+   'info' => 'My block 2',
+   'format' => '2',
+ ))
+@@ -14144,7 +14144,7 @@
+   'lid' => '525',
+   'location' => 'block:1:body',
+   'textgroup' => 'blocks',
+-  'source' => '<h3>My first custom block body</h3>',
++  'source' => '<h3>My first block body</h3>',
+   'version' => '1',
+ ))
+ ->values(array(
+@@ -14158,7 +14158,7 @@
+   'lid' => '527',
+   'location' => 'block:2:body',
+   'textgroup' => 'blocks',
+-  'source' => '<h3>My second custom block body</h3>',
++  'source' => '<h3>My second block body</h3>',
+   'version' => '1',
+ ))
+ ->values(array(
+@@ -26390,7 +26390,7 @@
+ ))
+ ->values(array(
+   'lid' => '525',
+-  'translation' => '<h3>fr - My first custom block body</h3>',
++  'translation' => '<h3>fr - My first block body</h3>',
+   'language' => 'fr',
+   'plid' => '0',
+   'plural' => '0',
+@@ -27262,7 +27262,7 @@
+ ))
+ ->values(array(
+   'lid' => '525',
+-  'translation' => '<h3>zu - My first custom block body</h3>',
++  'translation' => '<h3>zu - My first block body</h3>',
+   'language' => 'zu',
+   'plid' => '0',
+   'plural' => '0',
+diff --git a/core/modules/migrate_drupal_ui/tests/src/Functional/MigrateUpgradeTestBase.php b/core/modules/migrate_drupal_ui/tests/src/Functional/MigrateUpgradeTestBase.php
+index c09b7ca723..84d14b7e61 100644
+--- a/core/modules/migrate_drupal_ui/tests/src/Functional/MigrateUpgradeTestBase.php
++++ b/core/modules/migrate_drupal_ui/tests/src/Functional/MigrateUpgradeTestBase.php
+@@ -209,7 +209,7 @@ protected function assertReviewPage(WebAssert $session, array $all_available, ar
+   protected function assertIdConflict(WebAssert $session) {
+     $session->pageTextContains('WARNING: Content may be overwritten on your new site.');
+     $session->pageTextContains('There is conflicting content of these types:');
+-    $session->pageTextContains('custom block entities');
++    $session->pageTextContains('block entities');
+     $session->pageTextContains('custom menu link entities');
+     $session->pageTextContains('file entities');
+     $session->pageTextContains('taxonomy term entities');
+diff --git a/core/modules/rest/rest.module b/core/modules/rest/rest.module
+index ba61a17fea..34fda552a1 100644
+--- a/core/modules/rest/rest.module
++++ b/core/modules/rest/rest.module
+@@ -16,7 +16,7 @@ function rest_help($route_name, RouteMatchInterface $route_match) {
+     case 'help.page.rest':
+       $output = '';
+       $output .= '<h3>' . t('About') . '</h3>';
+-      $output .= '<p>' . t('The RESTful Web Services module provides a framework for exposing REST resources on your site. It provides support for content entity types such as the main site content, comments, custom blocks, taxonomy terms, and user accounts, etc. (see the <a href=":field">Field module help page</a> for more information about entities). REST support for content items of the Node module is enabled by default, and support for other types of content entities can be enabled. Other modules may add support for other types of REST resources. For more information, see the <a href=":rest">online documentation for the RESTful Web Services module</a>.', [':rest' => 'https://www.drupal.org/documentation/modules/rest', ':field' => (\Drupal::moduleHandler()->moduleExists('field')) ? \Drupal::url('help.page', ['name' => 'field']) : '#']) . '</p>';
++      $output .= '<p>' . t('The RESTful Web Services module provides a framework for exposing REST resources on your site. It provides support for content entity types such as the main site content, comments, blocks, taxonomy terms, and user accounts, etc. (see the <a href=":field">Field module help page</a> for more information about entities). REST support for content items of the Node module is enabled by default, and support for other types of content entities can be enabled. Other modules may add support for other types of REST resources. For more information, see the <a href=":rest">online documentation for the RESTful Web Services module</a>.', [':rest' => 'https://www.drupal.org/documentation/modules/rest', ':field' => (\Drupal::moduleHandler()->moduleExists('field')) ? \Drupal::url('help.page', ['name' => 'field']) : '#']) . '</p>';
+       $output .= '<h3>' . t('Uses') . '</h3>';
+       $output .= '<dl>';
+       $output .= '<dt>' . t('Installing supporting modules') . '</dt>';
+diff --git a/core/modules/rest/tests/src/Functional/EntityResource/BlockContent/BlockContentResourceTestBase.php b/core/modules/rest/tests/src/Functional/EntityResource/BlockContent/BlockContentResourceTestBase.php
+index 5766817940..83fdbcb107 100644
+--- a/core/modules/rest/tests/src/Functional/EntityResource/BlockContent/BlockContentResourceTestBase.php
++++ b/core/modules/rest/tests/src/Functional/EntityResource/BlockContent/BlockContentResourceTestBase.php
+@@ -58,7 +58,7 @@ protected function createEntity() {
+       block_content_add_body_field($block_content_type->id());
+     }
+ 
+-    // Create a "Llama" custom block.
++    // Create a "Llama" block.
+     $block_content = BlockContent::create([
+       'info' => 'Llama',
+       'type' => 'basic',
+diff --git a/core/modules/settings_tray/tests/src/FunctionalJavascript/QuickEditIntegrationTest.php b/core/modules/settings_tray/tests/src/FunctionalJavascript/QuickEditIntegrationTest.php
+index d30562f71d..581025d09b 100644
+--- a/core/modules/settings_tray/tests/src/FunctionalJavascript/QuickEditIntegrationTest.php
++++ b/core/modules/settings_tray/tests/src/FunctionalJavascript/QuickEditIntegrationTest.php
+@@ -123,14 +123,14 @@ public function testQuickEditLinks() {
+   }
+ 
+   /**
+-   * Tests that contextual links in custom blocks are changed.
++   * Tests that contextual links in blocks are changed.
+    *
+    * "Quick edit" is quickedit.module link.
+    * "Quick edit settings" is settings_tray.module link.
+    */
+   public function testCustomBlockLinks() {
+     $this->createBlockContentType('basic', TRUE);
+-    $block_content = $this->createBlockContent('Custom Block', 'basic', TRUE);
++    $block_content = $this->createBlockContent('Block', 'basic', TRUE);
+     $this->placeBlock('block_content:' . $block_content->uuid(), ['id' => 'custom']);
+     $this->drupalGet('user');
+     $page = $this->getSession()->getPage();
+@@ -147,7 +147,7 @@ public function testCustomBlockLinks() {
+   }
+ 
+   /**
+-   * Creates a custom block.
++   * Creates a block.
+    *
+    * @param bool|string $title
+    *   (optional) Title of block. When no value is given uses a random name.
+@@ -158,7 +158,7 @@ public function testCustomBlockLinks() {
+    *   (optional) Whether to save the block. Defaults to TRUE.
+    *
+    * @return \Drupal\block_content\Entity\BlockContent
+-   *   Created custom block.
++   *   Created block.
+    */
+   protected function createBlockContent($title = FALSE, $bundle = 'basic', $save = TRUE) {
+     $title = $title ?: $this->randomName();
+@@ -178,7 +178,7 @@ protected function createBlockContent($title = FALSE, $bundle = 'basic', $save =
+   }
+ 
+   /**
+-   * Creates a custom block type (bundle).
++   * Creates a block type (bundle).
+    *
+    * @param string $label
+    *   The block type label.
+@@ -186,7 +186,7 @@ protected function createBlockContent($title = FALSE, $bundle = 'basic', $save =
+    *   Whether or not to create the body field.
+    *
+    * @return \Drupal\block_content\Entity\BlockContentType
+-   *   Created custom block type.
++   *   Created block type.
+    */
+   protected function createBlockContentType($label, $create_body = FALSE) {
+     $bundle = BlockContentType::create([
+diff --git a/core/modules/shortcut/tests/src/Functional/ShortcutLinksTest.php b/core/modules/shortcut/tests/src/Functional/ShortcutLinksTest.php
+index 77e88959b9..9395eb396c 100644
+--- a/core/modules/shortcut/tests/src/Functional/ShortcutLinksTest.php
++++ b/core/modules/shortcut/tests/src/Functional/ShortcutLinksTest.php
+@@ -213,7 +213,7 @@ public function testShortcutQuickLink() {
+     ])->save();
+     // Test page with HTML tags in title.
+     $this->drupalGet('admin/structure/block/block-content/manage/basic');
+-    $page_title = new FormattableMarkup('Edit %label custom block type', ['%label' => 'Basic block']);
++    $page_title = new FormattableMarkup('Edit %label block type', ['%label' => 'Basic block']);
+     $this->assertRaw($page_title);
+     // Add shortcut to this page.
+     $this->clickLink('Add to Default shortcuts');
+diff --git a/core/modules/simpletest/simpletest.module b/core/modules/simpletest/simpletest.module
+index 0e0ea2afd4..dc366a9a08 100644
+--- a/core/modules/simpletest/simpletest.module
++++ b/core/modules/simpletest/simpletest.module
+@@ -576,7 +576,7 @@ function simpletest_log_read($test_id, $database_prefix, $test_class) {
+  *     $groups['Block'] => array(
+  *       'BlockTestCase' => array(
+  *         'name' => 'Block functionality',
+- *         'description' => 'Add, edit and delete custom block.',
++ *         'description' => 'Add, edit and delete block.',
+  *         'group' => 'Block',
+  *       ),
+  *     );
+diff --git a/core/modules/system/tests/fixtures/update/drupal-8.block-context-manager-2354889.php b/core/modules/system/tests/fixtures/update/drupal-8.block-context-manager-2354889.php
+index cb35676899..2601649a61 100644
+--- a/core/modules/system/tests/fixtures/update/drupal-8.block-context-manager-2354889.php
++++ b/core/modules/system/tests/fixtures/update/drupal-8.block-context-manager-2354889.php
+@@ -11,13 +11,13 @@
+ 
+ $connection = Database::getConnection();
+ 
+-// A custom block with visibility settings.
++// A block with visibility settings.
+ $block_configs[] = Yaml::decode(file_get_contents(__DIR__ . '/block.block.testfor2354889.yml'));
+ 
+-// A custom block without any visibility settings.
++// A block without any visibility settings.
+ $block_configs[] = Yaml::decode(file_get_contents(__DIR__ . '/block.block.secondtestfor2354889.yml'));
+ 
+-// A custom block with visibility settings that contain a non-existing context
++// A block with visibility settings that contain a non-existing context
+ // mapping.
+ $block_configs[] = Yaml::decode(file_get_contents(__DIR__ . '/block.block.thirdtestfor2354889.yml'));
+ 
+diff --git a/core/modules/system/tests/fixtures/update/drupal-8.local-actions-tasks-into-blocks-507488.php b/core/modules/system/tests/fixtures/update/drupal-8.local-actions-tasks-into-blocks-507488.php
+index 6cf44b1743..70f661cb0c 100644
+--- a/core/modules/system/tests/fixtures/update/drupal-8.local-actions-tasks-into-blocks-507488.php
++++ b/core/modules/system/tests/fixtures/update/drupal-8.local-actions-tasks-into-blocks-507488.php
+@@ -11,7 +11,7 @@
+ 
+ $connection = Database::getConnection();
+ 
+-// Structure of a custom block with visibility settings.
++// Structure of a block with visibility settings.
+ $block_configs[] = Yaml::decode(file_get_contents(__DIR__ . '/block.block.testfor507488.yml'));
+ 
+ foreach ($block_configs as $block_config) {
+diff --git a/core/modules/system/tests/fixtures/update/drupal-8.page-title-into-block-2476947.php b/core/modules/system/tests/fixtures/update/drupal-8.page-title-into-block-2476947.php
+index 766e9a6037..edf158d8a3 100644
+--- a/core/modules/system/tests/fixtures/update/drupal-8.page-title-into-block-2476947.php
++++ b/core/modules/system/tests/fixtures/update/drupal-8.page-title-into-block-2476947.php
+@@ -11,7 +11,7 @@
+ 
+ $connection = Database::getConnection();
+ 
+-// Structure of a custom block with visibility settings.
++// Structure of a block with visibility settings.
+ $block_configs[] = Yaml::decode(file_get_contents(__DIR__ . '/block.block.testfor2476947.yml'));
+ 
+ foreach ($block_configs as $block_config) {
+diff --git a/core/modules/system/tests/fixtures/update/drupal-8.seven-secondary-local-tasks-block-2569529.php b/core/modules/system/tests/fixtures/update/drupal-8.seven-secondary-local-tasks-block-2569529.php
+index 63582dc389..ce818f9758 100644
+--- a/core/modules/system/tests/fixtures/update/drupal-8.seven-secondary-local-tasks-block-2569529.php
++++ b/core/modules/system/tests/fixtures/update/drupal-8.seven-secondary-local-tasks-block-2569529.php
+@@ -11,7 +11,7 @@
+ 
+ $connection = Database::getConnection();
+ 
+-// Structure of a custom block with visibility settings.
++// Structure of a block with visibility settings.
+ $block_configs[] = Yaml::decode(file_get_contents(__DIR__ . '/block.block.testfor2569529.yml'));
+ 
+ foreach ($block_configs as $block_config) {
+diff --git a/core/modules/system/tests/fixtures/update/drupal-8.site-branding-into-block-2005546.php b/core/modules/system/tests/fixtures/update/drupal-8.site-branding-into-block-2005546.php
+index cd593723c9..fe1b6f655f 100644
+--- a/core/modules/system/tests/fixtures/update/drupal-8.site-branding-into-block-2005546.php
++++ b/core/modules/system/tests/fixtures/update/drupal-8.site-branding-into-block-2005546.php
+@@ -11,7 +11,7 @@
+ 
+ $connection = Database::getConnection();
+ 
+-// Structure of a custom block with visibility settings.
++// Structure of a block with visibility settings.
+ $block_configs[] = Yaml::decode(file_get_contents(__DIR__ . '/block.block.testfor2005546.yml'));
+ 
+ foreach ($block_configs as $block_config) {
+diff --git a/core/modules/system/tests/src/Functional/Update/UpdatePathRC1TestBaseFilledTest.php b/core/modules/system/tests/src/Functional/Update/UpdatePathRC1TestBaseFilledTest.php
+index 7573fc4a92..ff6a7126b6 100644
+--- a/core/modules/system/tests/src/Functional/Update/UpdatePathRC1TestBaseFilledTest.php
++++ b/core/modules/system/tests/src/Functional/Update/UpdatePathRC1TestBaseFilledTest.php
+@@ -80,7 +80,7 @@ public function testUpdatedSite() {
+     // Make sure the translated slogan appears.
+     $this->assertText('drupal Spanish');
+ 
+-    // Make sure the custom block appears.
++    // Make sure the block appears.
+     $this->drupalGet('<front>');
+     // Block title.
+     $this->assertText('Another block');
+@@ -160,7 +160,7 @@ public function testUpdatedSite() {
+     $this->drupalGet('admin/content');
+     $this->assertText('Test title');
+ 
+-    // Make sure our custom blocks show up.
++    // Make sure our blocks show up.
+     $this->drupalGet('admin/structure/block');
+     $this->assertText('Another block');
+     $this->assertText('Test block');
+diff --git a/core/modules/system/tests/src/Functional/Update/UpdatePathTestBaseFilledTest.php b/core/modules/system/tests/src/Functional/Update/UpdatePathTestBaseFilledTest.php
+index 2ed58fbabc..7881f0d159 100644
+--- a/core/modules/system/tests/src/Functional/Update/UpdatePathTestBaseFilledTest.php
++++ b/core/modules/system/tests/src/Functional/Update/UpdatePathTestBaseFilledTest.php
+@@ -81,7 +81,7 @@ public function testUpdatedSite() {
+     // Make sure the translated slogan appears.
+     $this->assertText('drupal Spanish');
+ 
+-    // Make sure the custom block appears.
++    // Make sure the block appears.
+     $this->drupalGet('<front>');
+     // Block title.
+     $this->assertText('Another block');
+@@ -161,7 +161,7 @@ public function testUpdatedSite() {
+     $this->drupalGet('admin/content');
+     $this->assertText('Test title');
+ 
+-    // Make sure our custom blocks show up.
++    // Make sure our blocks show up.
+     $this->drupalGet('admin/structure/block');
+     $this->assertText('Another block');
+     $this->assertText('Test block');
+diff --git a/core/profiles/demo_umami/modules/demo_umami_content/tests/src/Functional/UninstallDefaultContentTest.php b/core/profiles/demo_umami/modules/demo_umami_content/tests/src/Functional/UninstallDefaultContentTest.php
+index 008babc43e..9a7e17ee88 100644
+--- a/core/profiles/demo_umami/modules/demo_umami_content/tests/src/Functional/UninstallDefaultContentTest.php
++++ b/core/profiles/demo_umami/modules/demo_umami_content/tests/src/Functional/UninstallDefaultContentTest.php
+@@ -142,7 +142,7 @@ protected function assertImportedCustomBlock(EntityStorageInterface $block_stora
+   }
+ 
+   /**
+-   * Returns the expected properties of this profile's custom blocks.
++   * Returns the expected properties of this profile's blocks.
+    */
+   protected function expectedBlocks() {
+     return [
+diff --git a/core/profiles/demo_umami/themes/umami/umami.theme b/core/profiles/demo_umami/themes/umami/umami.theme
+index d8b61ff515..cabc8a7fe0 100644
+--- a/core/profiles/demo_umami/themes/umami/umami.theme
++++ b/core/profiles/demo_umami/themes/umami/umami.theme
+@@ -46,7 +46,7 @@ function umami_preprocess_field(&$variables, $hook) {
+  */
+ function umami_preprocess_block(&$variables) {
+   $variables['title_attributes']['class'][] = 'block__title';
+-  // Add a class indicating the custom block bundle.
++  // Add a class indicating the block bundle.
+   if (isset($variables['elements']['content']['#block_content'])) {
+     $variables['attributes']['class'][] = Html::getClass('block-type-' . $variables['elements']['content']['#block_content']->bundle());
+   }
+@@ -56,7 +56,7 @@ function umami_preprocess_block(&$variables) {
+  * Implements hook_theme_suggestions_HOOK_alter() for form templates.
+  */
+ function umami_theme_suggestions_block_alter(array &$suggestions, array $variables) {
+-  // Block suggestions for custom block bundles.
++  // Block suggestions for block bundles.
+   if (isset($variables['elements']['content']['#block_content'])) {
+     array_splice($suggestions, 1, 0, 'block__bundle__' . $variables['elements']['content']['#block_content']->bundle());
+   }
+diff --git a/core/themes/seven/seven.theme b/core/themes/seven/seven.theme
+index 2ad947c80b..c9c0e2c933 100644
+--- a/core/themes/seven/seven.theme
++++ b/core/themes/seven/seven.theme
+@@ -69,7 +69,7 @@ function seven_preprocess_node_add_list(&$variables) {
+ /**
+  * Implements hook_preprocess_HOOK() for block content add list templates.
+  *
+- * Displays the list of available custom block types for creation, adding
++ * Displays the list of available block types for creation, adding
+  * separate variables for the label and url.
+  */
+ function seven_preprocess_block_content_add_list(&$variables) {
+diff --git a/core/themes/seven/templates/block-content-add-list.html.twig b/core/themes/seven/templates/block-content-add-list.html.twig
+index 0c0c49664a..df26e1b934 100644
+--- a/core/themes/seven/templates/block-content-add-list.html.twig
++++ b/core/themes/seven/templates/block-content-add-list.html.twig
+@@ -1,16 +1,16 @@
+ {#
+ /**
+  * @file
+- * Seven's theme implementation to display a list of custom block types.
++ * Seven's theme implementation to display a list of block types.
+  *
+- * Displays the list of available custom block types for creation.
++ * Displays the list of available block types for creation.
+  *
+  * Available variables:
+- * - types: A collection of all the available custom block types.
++ * - types: A collection of all the available block types.
+  *   Each type contains:
+  *   - url: A link to add a block of this type.
+- *   - description: A description of this custom block type.
+- *   - label: The title of the custom block type.
++ *   - description: A description of this block type.
++ *   - label: The title of the block type.
+  *   - path: A path for the link to add a block of this type.
+  *
+  * @see template_preprocess_block_content_add_list()
+diff --git a/core/themes/stable/templates/admin/block-content-add-list.html.twig b/core/themes/stable/templates/admin/block-content-add-list.html.twig
+index ae99d1f834..a794da1021 100644
+--- a/core/themes/stable/templates/admin/block-content-add-list.html.twig
++++ b/core/themes/stable/templates/admin/block-content-add-list.html.twig
+@@ -1,13 +1,13 @@
+ {#
+ /**
+  * @file
+- * Theme override to present a list of custom block types.
++ * Theme override to present a list of block types.
+  *
+  * Available variables:
+- * - types: A collection of all the available custom block types.
++ * - types: A collection of all the available block types.
+  *   Each block type contains the following:
+  *   - link: A link to add a block of this type.
+- *   - description: A description of this custom block type.
++ *   - description: A description of this block type.
+  *
+  * @see template_preprocess_block_content_add_list()
+  */
+-- 
+2.15.1
+

@@ -1,0 +1,12 @@
+diff --git a/modules/ctools_block/src/Plugin/Block/EntityField.php b/modules/ctools_block/src/Plugin/Block/EntityField.php
+index 1120f09..0fd5b62 100644
+--- a/modules/ctools_block/src/Plugin/Block/EntityField.php
++++ b/modules/ctools_block/src/Plugin/Block/EntityField.php
+@@ -144,6 +144,7 @@ class EntityField extends BlockBase implements ContextAwarePluginInterface, Cont
+     $field = $entity->{$this->fieldName};
+     $display_settings = $this->getConfiguration()['formatter'];
+     $build['field'] = $field->view($display_settings);
++    $build['field']['#parent_object'] = $this;
+ 
+     // Set the cache data appropriately.
+     $build['#cache']['contexts'] = $this->getCacheContexts();

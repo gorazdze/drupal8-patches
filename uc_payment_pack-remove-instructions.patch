@@ -1,0 +1,58 @@
+From 17249f55f1ef60defc11a51b45bd091eec3dc29f Mon Sep 17 00:00:00 2001
+From: gorazdze <gorazd@dinamico.si>
+Date: Wed, 5 Oct 2016 15:29:43 +0200
+Subject: [PATCH] Payment Method Pack - Check: Improve output.
+
+---
+ .../src/Plugin/Ubercart/PaymentMethod/Check.php    | 31 +++++++++++++---------
+ 1 file changed, 18 insertions(+), 13 deletions(-)
+
+diff --git a/payment/uc_payment_pack/src/Plugin/Ubercart/PaymentMethod/Check.php b/payment/uc_payment_pack/src/Plugin/Ubercart/PaymentMethod/Check.php
+index a5f532b..6a6a420 100644
+--- a/payment/uc_payment_pack/src/Plugin/Ubercart/PaymentMethod/Check.php
++++ b/payment/uc_payment_pack/src/Plugin/Ubercart/PaymentMethod/Check.php
+@@ -68,23 +68,28 @@ class Check extends PaymentMethodPluginBase {
+    * {@inheritdoc}
+    */
+   public function cartDetails(OrderInterface $order, array $form, FormStateInterface $form_state) {
+-    $build['instructions'] = array(
+-      '#markup' => $this->t('Checks should be made out to:')
+-    );
++    // $build['instructions'] = array(
++    //   '#markup' => $this->t('Checks should be made out to:')
++    // );
+ 
+     $address = Address::create($this->configuration['address']);
+     $address->setFirstName($this->configuration['name']);
+-    $build['address'] = array(
+-      '#prefix' => '<p>',
+-      '#markup' => (string) $address,
+-      '#suffix' => '</p>',
+-    );
+ 
+-    $build['policy'] = array(
+-      '#prefix' => '<p>',
+-      '#markup' => Html::escape($this->configuration['policy']),
+-      '#suffix' => '</p>',
+-    );
++    if ((string) $address) {
++      $build['address'] = array(
++        '#prefix' => '<p>',
++        '#markup' => (string) $address,
++        '#suffix' => '</p>',
++      );
++    }
++
++    if ($this->configuration['policy']) {
++      $build['policy'] = array(
++        '#prefix' => '<p>',
++        '#markup' => Html::escape($this->configuration['policy']),
++        '#suffix' => '</p>',
++      );
++    }
+ 
+     return $build;
+   }
+-- 
+2.8.4 (Apple Git-73)
+

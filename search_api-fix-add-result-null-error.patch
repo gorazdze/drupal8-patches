@@ -1,0 +1,35 @@
+From 054452ee40c3db5f3e72d78dcc67a1eb4e9d1356 Mon Sep 17 00:00:00 2001
+From: gorazdze <gorazd@dinamico.si>
+Date: Tue, 7 Feb 2017 00:36:19 +0100
+Subject: [PATCH] Fix error TypeError: Argument 1 passed to
+ Drupal\search_api\Utility\QueryHelper::addResults() must implement interface
+ Drupal\search_api\Query\ResultSetInterface, null given, called in
+ /usr/www/users/netmedia/vrtnarstvo-adamic/modules/contrib/search_api/src/Plugin/views/cache/SearchApiCache.php
+ on line 113.
+
+---
+ src/Plugin/views/cache/SearchApiCache.php | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/src/Plugin/views/cache/SearchApiCache.php b/src/Plugin/views/cache/SearchApiCache.php
+index 431c90b..394e016 100644
+--- a/src/Plugin/views/cache/SearchApiCache.php
++++ b/src/Plugin/views/cache/SearchApiCache.php
+@@ -74,9 +74,11 @@ class SearchApiCache extends Time {
+         // et al. work.
+         /** @var \Drupal\search_api\Query\ResultSetInterface $results */
+         $results = $cache->data['search_api results'];
+-        \Drupal::getContainer()
+-          ->get('search_api.query_helper')
+-          ->addResults($results);
++        if(!empty($results)) {
++          \Drupal::getContainer()
++            ->get('search_api.query_helper')
++            ->addResults($results);
++        }
+ 
+         try {
+           $this->getQuery()->setSearchApiResults($results);
+-- 
+2.10.1 (Apple Git-78)
+

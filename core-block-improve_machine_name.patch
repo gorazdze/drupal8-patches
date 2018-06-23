@@ -1,0 +1,40 @@
+From 8b14e2ce5db835b78765ecc984386c5ac14a5717 Mon Sep 17 00:00:00 2001
+From: gorazdze <gorazd@dinamico.si>
+Date: Fri, 23 Dec 2016 23:40:35 +0100
+Subject: [PATCH] Improve machine name on block add form. Machine name is not
+ auto filled and removes '-'.
+
+---
+ core/modules/block/src/BlockForm.php | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/core/modules/block/src/BlockForm.php b/core/modules/block/src/BlockForm.php
+index bece32d..9d72878 100644
+--- a/core/modules/block/src/BlockForm.php
++++ b/core/modules/block/src/BlockForm.php
+@@ -144,16 +144,20 @@ public function form(array $form, FormStateInterface $form_state) {
+       '#type' => 'machine_name',
+       '#maxlength' => 64,
+       '#description' => $this->t('A unique name for this block instance. Must be alpha-numeric and underscore separated.'),
+-      '#default_value' => !$entity->isNew() ? $entity->id() : $this->getUniqueMachineName($entity),
++      // '#default_value' => !$entity->isNew() ? $entity->id() : $this->getUniqueMachineName($entity),
+       '#machine_name' => array(
+         'exists' => '\Drupal\block\Entity\Block::load',
+-        'replace_pattern' => '[^a-z0-9_.]+',
++        // 'replace_pattern' => '[^a-z0-9.]+',
+         'source' => array('settings', 'label'),
+       ),
+       '#required' => TRUE,
+       '#disabled' => !$entity->isNew(),
+     );
+ 
++    if (!$entity->isNew()) {
++      $form['id']['#default_value'] = $entity->id();
++    }
++
+     // Theme settings.
+     if ($entity->getTheme()) {
+       $form['theme'] = array(
+-- 
+2.10.1 (Apple Git-78)
+

@@ -1,0 +1,18 @@
+--- a/src/Plugin/views/cache/SearchApiCache.php
++++ b/src/Plugin/views/cache/SearchApiCache.php
+@@ -132,4 +132,15 @@ class SearchApiCache extends Time {
+     throw new SearchApiException('No matching Search API Views query found in view.');
+   }
+
++  /**
++   * {@inheritdoc}
++   */
++  public function alterCacheMetadata(\Drupal\Core\Cache\CacheableMetadata $cache_metadata) {
++    // When additional access checks are executed, the cache has to vary
++    // by user.
++    // if (!empty($this->view->query->options['skip_access']) && $this->view->query->options['skip_access'] == FALSE) {.
++    $cache_metadata->addCacheContexts(['user']);
++    // }.
++  }
++
+ }

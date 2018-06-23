@@ -1,0 +1,29 @@
+diff --git a/uc_store/src/Element/UcAddress.php b/uc_store/src/Element/UcAddress.php
+index 413cdf1..f8e790c 100644
+--- a/uc_store/src/Element/UcAddress.php
++++ b/uc_store/src/Element/UcAddress.php
+@@ -142,6 +142,24 @@ class UcAddress extends Element\FormElement {
+           );
+           break;
+ 
++        case 'tax_number':
++          $subelement = array(
++            '#type' => 'textfield',
++            '#size' => 32,
++            '#prefix' => '<div id="' . $tax_number_wrapper . '">',
++            '#suffix' => '</div>',
++            '#states' => array(
++              // Only show this field when the 'toggle_me' checkbox is enabled.
++              'visible' => array(
++                ':input[name="panes[billing][company]"]' => array('filled' => TRUE),
++              ),
++              'required' => array(
++                ':input[name="' . $element['#name'] . '[company]"]' => array('filled' => TRUE),
++              ),
++            ),
++          );
++          break;
++
+         default:
+           $subelement = array(
+             '#type' => 'textfield',

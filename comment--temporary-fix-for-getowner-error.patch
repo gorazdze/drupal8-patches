@@ -1,0 +1,77 @@
+From 4345e18fe73d8d803cddeb5b62b9ad0f27b3de19 Mon Sep 17 00:00:00 2001
+From: gorazdze <gorazd@dinamico.si>
+Date: Thu, 18 Jan 2018 17:38:00 +0100
+Subject: [PATCH 1/1] =?UTF-8?q?Temporary=20fix=20for=20error=20=E2=80=9CCa?=
+ =?UTF-8?q?ll=20to=20a=20member=20function=20getOwner()=20on=20null=20in?=
+ =?UTF-8?q?=20template=5Fpreprocess=5Fcomment()=20(line=20683=20...?=
+ =?UTF-8?q?=E2=80=9D.?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ core/modules/comment/comment.module | 47 ++++++++++++++++++++-----------------
+ 1 file changed, 25 insertions(+), 22 deletions(-)
+
+diff --git a/core/modules/comment/comment.module b/core/modules/comment/comment.module
+index ee26510729..e555fbca81 100644
+--- a/core/modules/comment/comment.module
++++ b/core/modules/comment/comment.module
+@@ -680,29 +680,32 @@ function template_preprocess_comment(&$variables) {
+   if ($comment->hasParentComment()) {
+     // Fetch and store the parent comment information for use in templates.
+     $comment_parent = $comment->getParentComment();
+-    $account_parent = $comment_parent->getOwner();
+-    $variables['parent_comment'] = $comment_parent;
+-    $username = [
+-      '#theme' => 'username',
+-      '#account' => $account_parent,
+-    ];
+-    $variables['parent_author'] = drupal_render($username);
+-    $variables['parent_created'] = format_date($comment_parent->getCreatedTime());
+-    // Avoid calling format_date() twice on the same timestamp.
+-    if ($comment_parent->getChangedTime() == $comment_parent->getCreatedTime()) {
+-      $variables['parent_changed'] = $variables['parent_created'];
+-    }
+-    else {
+-      $variables['parent_changed'] = format_date($comment_parent->getChangedTime());
++
++    if (isset($comment_parent)) {
++      $account_parent = $comment_parent->getOwner();
++      $variables['parent_comment'] = $comment_parent;
++      $username = [
++        '#theme' => 'username',
++        '#account' => $account_parent,
++      ];
++      $variables['parent_author'] = drupal_render($username);
++      $variables['parent_created'] = format_date($comment_parent->getCreatedTime());
++      // Avoid calling format_date() twice on the same timestamp.
++      if ($comment_parent->getChangedTime() == $comment_parent->getCreatedTime()) {
++        $variables['parent_changed'] = $variables['parent_created'];
++      }
++      else {
++        $variables['parent_changed'] = format_date($comment_parent->getChangedTime());
++      }
++      $permalink_uri_parent = $comment_parent->permalink();
++      $attributes = $permalink_uri_parent->getOption('attributes') ?: [];
++      $attributes += ['class' => ['permalink'], 'rel' => 'bookmark'];
++      $permalink_uri_parent->setOption('attributes', $attributes);
++      $variables['parent_title'] = \Drupal::l($comment_parent->getSubject(), $permalink_uri_parent);
++      $variables['parent_permalink'] = \Drupal::l(t('Parent permalink'), $permalink_uri_parent);
++      $variables['parent'] = t('In reply to @parent_title by @parent_username',
++          ['@parent_username' => $variables['parent_author'], '@parent_title' => $variables['parent_title']]);
+     }
+-    $permalink_uri_parent = $comment_parent->permalink();
+-    $attributes = $permalink_uri_parent->getOption('attributes') ?: [];
+-    $attributes += ['class' => ['permalink'], 'rel' => 'bookmark'];
+-    $permalink_uri_parent->setOption('attributes', $attributes);
+-    $variables['parent_title'] = \Drupal::l($comment_parent->getSubject(), $permalink_uri_parent);
+-    $variables['parent_permalink'] = \Drupal::l(t('Parent permalink'), $permalink_uri_parent);
+-    $variables['parent'] = t('In reply to @parent_title by @parent_username',
+-        ['@parent_username' => $variables['parent_author'], '@parent_title' => $variables['parent_title']]);
+   }
+   else {
+     $variables['parent_comment'] = '';
+-- 
+2.15.0
+

@@ -1,0 +1,46 @@
+From a9f9296f060ea045cb1a337c672510300e2c3121 Mon Sep 17 00:00:00 2001
+From: gorazdze <gorazd@dinamico.si>
+Date: Tue, 29 Aug 2017 12:25:26 +0200
+Subject: [PATCH] Add extra variables for price template.
+
+---
+ uc_store/templates/uc-price.html.twig | 4 ++++
+ uc_store/uc_store.module              | 5 +++++
+ 2 files changed, 9 insertions(+)
+
+diff --git a/uc_store/templates/uc-price.html.twig b/uc_store/templates/uc-price.html.twig
+index 548b572..d6559bd 100644
+--- a/uc_store/templates/uc-price.html.twig
++++ b/uc_store/templates/uc-price.html.twig
+@@ -7,7 +7,11 @@
+  *
+  * Available variables:
+  * - price: A formatted price.
++ * - price_value: Formatted price without symbol.
++ * - price_raw: Raw price value.
+  * - suffixes: An array of suffixes to be attached to this price.
++ * - currency: Currency data: code, symbol, symbol_after, thousands_marker,
++ *   decimal_marker, precision.
+  *
+  * @ingroup themeable
+ #}
+diff --git a/uc_store/uc_store.module b/uc_store/uc_store.module
+index a8a7490..9de39cb 100644
+--- a/uc_store/uc_store.module
++++ b/uc_store/uc_store.module
+@@ -128,7 +128,12 @@ function uc_store_theme() {
+  * Default template: uc-price.html.twig.
+  */
+ function template_preprocess_uc_price(&$variables) {
++  $variables['price_raw'] = $variables['price'];
++  $variables['price_value'] = uc_currency_format($variables['price'], FALSE);
+   $variables['price'] = uc_currency_format($variables['price']);
++
++  $currency_config = \Drupal::config('uc_store.settings')->get('currency');
++  $variables['currency'] = $currency_config;
+ }
+ 
+ /**
+-- 
+2.10.1
+

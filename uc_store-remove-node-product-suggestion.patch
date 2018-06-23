@@ -1,0 +1,35 @@
+From 61bae32a80c5deede449edc5ad93e07148c54647 Mon Sep 17 00:00:00 2001
+From: gorazdze <gorazd@dinamico.si>
+Date: Tue, 29 Aug 2017 16:10:31 +0200
+Subject: [PATCH] Remove unneeded node product suggestions.
+
+---
+ uc_product/uc_product.module | 12 ------------
+ 1 file changed, 12 deletions(-)
+
+diff --git a/uc_product/uc_product.module b/uc_product/uc_product.module
+index f02a62d..50b6ae5 100644
+--- a/uc_product/uc_product.module
++++ b/uc_product/uc_product.module
+@@ -299,18 +299,6 @@ function uc_product_view_product(array &$build, NodeInterface $node, EntityViewD
+ }
+ 
+ /**
+- * Implements hook_theme_suggestions_HOOK_alter().
+- *
+- * Product classes default to using node--product.html.twig if they don't have
+- * their own template.
+- */
+-function uc_product_theme_suggestions_node_alter(array &$suggestions, array $variables) {
+-  if (uc_product_is_product($variables['elements']['#node'])) {
+-    $suggestions[] = 'node__product';
+-  }
+-}
+-
+-/**
+  * Implements hook_preprocess_html().
+  *
+  * Adds a body class to product node pages.
+-- 
+2.10.1
+

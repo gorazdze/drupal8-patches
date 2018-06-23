@@ -1,0 +1,28 @@
+diff --git a/src/Plugin/views/cache/SearchApiCache.php b/src/Plugin/views/cache/SearchApiCache.php
+index ff9e6eb..c03f0f1 100644
+--- a/src/Plugin/views/cache/SearchApiCache.php
++++ b/src/Plugin/views/cache/SearchApiCache.php
+@@ -3,6 +3,7 @@
+ namespace Drupal\search_api\Plugin\views\cache;
+
+ use Drupal\Core\Cache\Cache;
++use Drupal\Core\Cache\CacheableMetadata;
+ use Drupal\search_api\SearchApiException;
+ use Drupal\search_api\Plugin\views\query\SearchApiQuery;
+ use Drupal\views\Plugin\views\cache\Time;
+@@ -132,4 +133,15 @@ class SearchApiCache extends Time {
+     throw new SearchApiException('No matching Search API Views query found in view.');
+   }
+
++  /**
++   * {@inheritdoc}
++   */
++  public function alterCacheMetadata(CacheableMetadata $cache_metadata) {
++    // When additional access checks are executed, the cache has to vary
++    // by user.
++    //if (!empty($this->view->query->options['skip_access']) && $this->view->query->options['skip_access'] == FALSE) {
++      $cache_metadata->addCacheContexts(['user']);
++    //}
++  }
++
+ }

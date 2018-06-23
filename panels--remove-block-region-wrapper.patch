@@ -1,0 +1,27 @@
+From 4844070c42fa78894b5bd9ff2cfdf4845eac4aaa Mon Sep 17 00:00:00 2001
+From: gorazdze <gorazd@dinamico.si>
+Date: Wed, 13 Jul 2016 21:42:35 +0200
+Subject: [PATCH] Remove unnecessary block region wrapper.
+
+---
+ src/Plugin/DisplayBuilder/StandardDisplayBuilder.php | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/src/Plugin/DisplayBuilder/StandardDisplayBuilder.php b/src/Plugin/DisplayBuilder/StandardDisplayBuilder.php
+index a831912..c2837c5 100644
+--- a/src/Plugin/DisplayBuilder/StandardDisplayBuilder.php
++++ b/src/Plugin/DisplayBuilder/StandardDisplayBuilder.php
+@@ -93,10 +93,6 @@ class StandardDisplayBuilder extends DisplayBuilderBase implements ContainerFact
+         continue;
+       }
+ 
+-      $region_name = Html::getClass("block-region-$region");
+-      $build[$region]['#prefix'] = '<div class="' . $region_name . '">';
+-      $build[$region]['#suffix'] = '</div>';
+-
+       /** @var \Drupal\Core\Block\BlockPluginInterface[] $blocks */
+       $weight = 0;
+       foreach ($blocks as $block_id => $block) {
+-- 
+2.7.4 (Apple Git-66)
+

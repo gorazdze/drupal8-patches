@@ -1,0 +1,26 @@
+From de09269384f28fad6afe25d21a8f3cc556bef362 Mon Sep 17 00:00:00 2001
+From: gorazdze <gorazd@dinamico.si>
+Date: Sat, 19 Nov 2016 20:13:34 +0100
+Subject: [PATCH] Set panels blocks form actions buttons weight.
+
+---
+ src/Form/PanelsBlockConfigureFormBase.php | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/Form/PanelsBlockConfigureFormBase.php b/src/Form/PanelsBlockConfigureFormBase.php
+index 6d29fe1..e0e7555 100644
+--- a/src/Form/PanelsBlockConfigureFormBase.php
++++ b/src/Form/PanelsBlockConfigureFormBase.php
+@@ -135,6 +135,9 @@ abstract class PanelsBlockConfigureFormBase extends FormBase {
+       '#required' => TRUE,
+     ];
+ 
++    $form['actions'] = [
++      '#weight' => 99,
++    ];
+     $form['actions']['submit'] = [
+       '#type' => 'submit',
+       '#value' => $this->submitText(),
+-- 
+2.9.3 (Apple Git-75)
+

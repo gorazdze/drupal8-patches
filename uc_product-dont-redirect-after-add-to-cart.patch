@@ -1,0 +1,25 @@
+From 2122eb191489d0b84ca65af8e4f6cfd267744048 Mon Sep 17 00:00:00 2001
+From: gorazdze <gorazd@dinamico.si>
+Date: Wed, 12 Oct 2016 23:32:38 +0200
+Subject: [PATCH] Do not redirect after add to cart.
+
+---
+ uc_product/src/Form/BuyItNowForm.php | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/uc_product/src/Form/BuyItNowForm.php b/uc_product/src/Form/BuyItNowForm.php
+index fd08afd..00bfaed 100644
+--- a/uc_product/src/Form/BuyItNowForm.php
++++ b/uc_product/src/Form/BuyItNowForm.php
+@@ -88,7 +88,7 @@ class BuyItNowForm extends FormBase implements BaseFormIdInterface {
+       $cart = \Drupal::service('uc_cart.manager')->get();
+       $redirect = $cart->addItem($form_state->getValue('nid'), $form_state->getValue('qty'), $data, $msg);
+       if (isset($redirect)) {
+-        $form_state->setRedirectUrl($redirect);
++        // $form_state->setRedirectUrl($redirect);
+       }
+     }
+   }
+-- 
+2.8.4 (Apple Git-73)
+

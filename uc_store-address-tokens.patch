@@ -1,0 +1,151 @@
+diff --git a/uc_store/uc_store.tokens.inc b/uc_store/uc_store.tokens.inc
+index 56a1e24..2864084 100644
+--- a/uc_store/uc_store.tokens.inc
++++ b/uc_store/uc_store.tokens.inc
+@@ -18,6 +18,12 @@ function uc_store_token_info() {
+     'description' => t('Tokens for store-specific, but globally available, information.'),
+   );
+ 
++  $uc_address_type = array(
++    'name' => t('Ubercart Address'),
++    'description' => t('Tokens for ubercart address.'),
++    'needs-data' => 'uc_address',
++  );
++
+   $site['login-link'] = array(
+     'name' => t('Login URL'),
+     'description' => t('A link to the site login page.'),
+@@ -57,11 +63,64 @@ function uc_store_token_info() {
+     'type' => 'url',
+   );
+ 
++  $uc_address['first-name'] = array(
++    'name' => t('First name'),
++    'description' => t('The Ubercart store first name name.'),
++  );
++  $uc_address['last-name'] = array(
++    'name' => t('Last name'),
++    'description' => t('The Ubercart store last name name.'),
++  );
++  $uc_address['company'] = array(
++    'name' => t('Company name'),
++    'description' => t('The Ubercart store company name.'),
++  );
++  $uc_address['street1'] = array(
++    'name' => t('Street 1'),
++    'description' => t('The Ubercart store street1 name.'),
++  );
++  $uc_address['street2'] = array(
++    'name' => t('Street 2'),
++    'description' => t('The Ubercart store street2 name.'),
++  );
++  $uc_address['city'] = array(
++    'name' => t('City'),
++    'description' => t('The Ubercart store city name.'),
++  );
++  $uc_address['zone'] = array(
++    'name' => t('State/province'),
++    'description' => t('The Ubercart store zone name.'),
++  );
++  $uc_address['country'] = array(
++    'name' => t('Country'),
++    'description' => t('The Ubercart store country name.'),
++  );
++  $uc_address['postal-code'] = array(
++    'name' => t('Postal code'),
++    'description' => t('The Ubercart store postal-code name.'),
++  );
++  $uc_address['phone'] = array(
++    'name' => t('Phone'),
++    'description' => t('The Ubercart store phone name.'),
++  );
++  $uc_address['email'] = array(
++    'name' => t('E-mail address'),
++    'description' => t('The Ubercart store email name.'),
++  );
++  $uc_address['tax-number'] = array(
++    'name' => t('Tax number'),
++    'description' => t('The Ubercart store tax number.'),
++  );
++
+   return array(
+-    'types' => array('store' => $type),
++    'types' => array(
++       'store' => $type,
++       'uc-address' => $uc_address_type,
++    ),
+     'tokens' => array(
+       'site' => $site,
+       'store' => $store,
++      'uc-address' => $uc_address,
+     ),
+   );
+ }
+@@ -138,6 +197,67 @@ function uc_store_tokens($type, $tokens, array $data, array $options, Bubbleable
+     if ($link_tokens = $token_service->findWithPrefix($tokens, 'help-url')) {
+       $replacements += $token_service->generate('url', $link_tokens, array('path' => $config->get('help_page')), $options, $bubbleable_metadata);
+     }
++
++    // Handle chaining for tokens that have 'type' defined in hook_token_info()
++    if ($uc_address_tokens = $token_service->findWithPrefix($tokens, 'address')) {
++      $uc_address = \Drupal\uc_store\Address::create($config->get('address'));
++      $replacements += $token_service->generate('uc-address', $uc_address_tokens, array('uc_address' => $uc_address), $options, $bubbleable_metadata);
++    }
++  }
++
++  if ($type == 'uc-address' && !empty($data['uc_address'])) {
++    $address = $data['uc_address'];
++
++    foreach ($tokens as $name => $original) {
++      switch ($name) {
++        case 'first-name':
++          $replacements[$original] = $address->getFirstName();
++          break;
++
++        case 'last-name':
++          $replacements[$original] = $address->getLastName();
++          break;
++
++        case 'company':
++          $replacements[$original] = $address->getCompany();
++          break;
++
++        case 'street1':
++          $replacements[$original] = $address->getStreet1();
++          break;
++
++        case 'street2':
++          $replacements[$original] = $address->getStreet2();
++          break;
++
++        case 'city':
++          $replacements[$original] = $address->getCity();
++          break;
++
++        case 'zone':
++          $replacements[$original] = $address->getZone();
++          break;
++
++        case 'country':
++          $replacements[$original] = $address->getCountry();
++          break;
++
++        case 'postal-code':
++          $replacements[$original] = $address->getPostalCode();
++          break;
++
++        case 'phone':
++          $replacements[$original] = $address->getPhone();
++          break;
++
++        case 'email':
++          $replacements[$original] = $address->getEmail();
++          break;
++
++        case 'tax-number':
++          $replacements[$original] = $address->getTaxNumber();
++      }
++    }
+   }
+ 
+   return $replacements;

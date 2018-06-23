@@ -1,0 +1,57 @@
+From 4b5b77d14057b339fd726bdfd622644b52d6869e Mon Sep 17 00:00:00 2001
+From: gorazdze <gorazd@dinamico.si>
+Date: Sun, 1 Apr 2018 19:47:45 +0200
+Subject: [PATCH] Change drupal core stupid UI in accout form, place User name
+ before Email and Current password.
+
+---
+ core/modules/user/src/AccountForm.php | 26 ++++++++++++++------------
+ 1 file changed, 14 insertions(+), 12 deletions(-)
+
+diff --git a/core/modules/user/src/AccountForm.php b/core/modules/user/src/AccountForm.php
+index d6959681f4..cb558ab04a 100644
+--- a/core/modules/user/src/AccountForm.php
++++ b/core/modules/user/src/AccountForm.php
+@@ -77,18 +77,6 @@ public function form(array $form, FormStateInterface $form_state) {
+       '#weight' => -10,
+     ];
+ 
+-    // The mail field is NOT required if account originally had no mail set
+-    // and the user performing the edit has 'administer users' permission.
+-    // This allows users without email address to be edited and deleted.
+-    // Also see \Drupal\user\Plugin\Validation\Constraint\UserMailRequired.
+-    $form['account']['mail'] = [
+-      '#type' => 'email',
+-      '#title' => $this->t('Email address'),
+-      '#description' => $this->t('A valid email address. All emails from the system will be sent to this address. The email address is not made public and will only be used if you wish to receive a new password or wish to receive certain news or notifications by email.'),
+-      '#required' => !(!$account->getEmail() && $admin),
+-      '#default_value' => (!$register ? $account->getEmail() : ''),
+-    ];
+-
+     // Only show name field on registration form or user can change own username.
+     $form['account']['name'] = [
+       '#type' => 'textfield',
+@@ -104,6 +92,20 @@ public function form(array $form, FormStateInterface $form_state) {
+       ],
+       '#default_value' => (!$register ? $account->getAccountName() : ''),
+       '#access' => ($register || ($user->id() == $account->id() && $user->hasPermission('change own username')) || $admin),
++      '#weight' => -10,
++    ];
++
++    // The mail field is NOT required if account originally had no mail set
++    // and the user performing the edit has 'administer users' permission.
++    // This allows users without email address to be edited and deleted.
++    // Also see \Drupal\user\Plugin\Validation\Constraint\UserMailRequired.
++    $form['account']['mail'] = [
++      '#type' => 'email',
++      '#title' => $this->t('Email address'),
++      '#description' => $this->t('A valid email address. All emails from the system will be sent to this address. The email address is not made public and will only be used if you wish to receive a new password or wish to receive certain news or notifications by email.'),
++      '#required' => !(!$account->getEmail() && $admin),
++      '#default_value' => (!$register ? $account->getEmail() : ''),
++      '#weight' => -10,
+     ];
+ 
+     // Display password field only for existing users or when user is allowed to
+-- 
+2.15.1
+

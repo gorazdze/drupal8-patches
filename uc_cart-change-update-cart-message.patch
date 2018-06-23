@@ -1,0 +1,26 @@
+From 53a6244e7c01c61c9c2e0a8bfa127d9cae81f87e Mon Sep 17 00:00:00 2001
+From: gorazdze <gorazd@dinamico.si>
+Date: Wed, 12 Oct 2016 23:32:13 +0200
+Subject: [PATCH] Change cart item updated message.
+
+---
+ uc_cart/src/Cart.php | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/uc_cart/src/Cart.php b/uc_cart/src/Cart.php
+index 6034c32..74f51a4 100644
+--- a/uc_cart/src/Cart.php
++++ b/uc_cart/src/Cart.php
+@@ -115,7 +115,8 @@ class Cart implements CartInterface {
+     else {
+       // If it is in the cart, update the item instead.
+       if ($msg) {
+-        drupal_set_message(t('Your item(s) have been updated.'));
++        // drupal_set_message(t('Your item(s) have been updated.'));
++        drupal_set_message(t('<strong>@product-title</strong> added to <a href=":url">your shopping cart</a>.', ['@product-title' => $node->label(), ':url' => Url::fromRoute('uc_cart.cart')->toString()]));
+       }
+       $item_entity = CartItem::load(current(array_keys($result)));
+       $qty += $item_entity->qty->value;
+-- 
+2.8.4 (Apple Git-73)
+

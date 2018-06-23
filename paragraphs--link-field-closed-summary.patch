@@ -1,0 +1,27 @@
+From 07cc3cef07c24b1704723bcf034d29d7df90a574 Mon Sep 17 00:00:00 2001
+From: gorazdze <gorazd@dinamico.si>
+Date: Wed, 27 Sep 2017 18:50:31 +0200
+Subject: [PATCH]  Add support for Link field in Closed summary.
+
+---
+ src/Entity/Paragraph.php | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/src/Entity/Paragraph.php b/src/Entity/Paragraph.php
+index aa6ca0c..c5f67ff 100644
+--- a/src/Entity/Paragraph.php
++++ b/src/Entity/Paragraph.php
+@@ -465,6 +465,10 @@ class Paragraph extends ContentEntityBase implements ParagraphInterface {
+           $summary[] = $block_admin_label;
+         }
+       }
++
++      if ($field_definition->getType() == 'link') {
++        $summary[] = $this->get($field_name)->uri;
++      }
+     }
+ 
+     if ($show_behavior_summary) {
+-- 
+2.10.1
+

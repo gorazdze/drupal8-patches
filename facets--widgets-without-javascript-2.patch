@@ -1,0 +1,37 @@
+From 1cc44f10fdedcaac3aba72a1476d612c204461b8 Mon Sep 17 00:00:00 2001
+From: borisson_ <borisson_@2393360.no-reply.drupal.org>
+Date: Sat, 10 Mar 2018 09:14:11 +0100
+Subject: [PATCH] Issue #2913250 by borisson_: Sort weight defaults for sort
+ processors are broken
+
+---
+ tests/src/Functional/ProcessorIntegrationTest.php | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/tests/src/Functional/ProcessorIntegrationTest.php b/tests/src/Functional/ProcessorIntegrationTest.php
+index 64dad4c..91e8f61 100644
+--- a/tests/src/Functional/ProcessorIntegrationTest.php
++++ b/tests/src/Functional/ProcessorIntegrationTest.php
+@@ -85,8 +85,8 @@ class ProcessorIntegrationTest extends FacetsTestBase {
+     $this->assertSession()->statusCodeEquals(200);
+     $this->assertSession()->checkboxChecked('edit-facet-settings-count-limit-status');
+     $this->assertSession()->checkboxChecked('edit-facet-settings-hide-non-narrowing-result-processor-status');
+-    $this->assertOptionSelected('edit-processors-count-limit-weights-build', -10);
+-    $this->assertOptionSelected('edit-processors-hide-non-narrowing-result-processor-weights-build', -10);
++    $this->assertOptionSelected('edit-processors-count-limit-weights-build', 50);
++    $this->assertOptionSelected('edit-processors-hide-non-narrowing-result-processor-weights-build', 40);
+ 
+     // Change the weight of one of the processors and test that the weight
+     // change persisted.
+@@ -98,7 +98,7 @@ class ProcessorIntegrationTest extends FacetsTestBase {
+     $this->drupalPostForm(NULL, $form, 'Save');
+     $this->assertSession()->checkboxChecked('edit-facet-settings-count-limit-status');
+     $this->assertSession()->checkboxChecked('edit-facet-settings-hide-non-narrowing-result-processor-status');
+-    $this->assertOptionSelected('edit-processors-count-limit-weights-build', -10);
++    $this->assertOptionSelected('edit-processors-count-limit-weights-build', 50);
+     $this->assertOptionSelected('edit-processors-hide-non-narrowing-result-processor-weights-build', 5);
+   }
+ 
+-- 
+2.15.1
+

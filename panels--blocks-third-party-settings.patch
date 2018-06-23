@@ -1,0 +1,42 @@
+From 039adfcb7e156bcc6e5a868873ee68eb72da2a45 Mon Sep 17 00:00:00 2001
+From: gorazdze <gorazd@dinamico.si>
+Date: Sat, 19 Nov 2016 12:59:10 +0100
+Subject: [PATCH] Third party settings for panels blocks.
+
+---
+ src/Form/PanelsBlockConfigureFormBase.php | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/src/Form/PanelsBlockConfigureFormBase.php b/src/Form/PanelsBlockConfigureFormBase.php
+index 2dabe75..87b6941 100644
+--- a/src/Form/PanelsBlockConfigureFormBase.php
++++ b/src/Form/PanelsBlockConfigureFormBase.php
+@@ -180,6 +180,7 @@ abstract class PanelsBlockConfigureFormBase extends FormBase {
+ 
+     $configuration = $this->block->getConfiguration();
+     $configuration['region'] = $form_state->getValue('region');
++    $configuration['third_party_settings'] = $form_state->getValue('third_party_settings');
+     $this->getVariantPlugin()->updateBlock($this->block->getConfiguration()['uuid'], $configuration);
+ 
+     $cached_values = $this->getCachedValues($this->tempstore, $this->tempstore_id, $form_state->get('machine_name'));
+@@ -196,8 +197,16 @@ abstract class PanelsBlockConfigureFormBase extends FormBase {
+    *
+    * @return \Drupal\panels\Plugin\DisplayVariant\PanelsDisplayVariant
+    */
+-  protected function getVariantPlugin() {
++  public function getVariantPlugin() {
+     return $this->variantPlugin;
+   }
+ 
++  /**
++   * Gets the block plugin.
++   *
++   * @return \Drupal\Core\Block\BlockPluginInterface
++   */
++  public function getBlock() {
++    return $this->block;
++  }
+ }
+-- 
+2.9.3 (Apple Git-75)
+

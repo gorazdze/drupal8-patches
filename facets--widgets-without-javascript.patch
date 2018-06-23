@@ -1,0 +1,470 @@
+From abbe6735bc6f05097a90660da044d74286a34346 Mon Sep 17 00:00:00 2001
+From: gorazdze <gorazd@dinamico.si>
+Date: Sun, 3 Sep 2017 23:34:43 +0200
+Subject: [PATCH] Build checkboxes and dropdown widgets with twig instead of
+ javascript.
+
+---
+ facets.module                                    | 14 ++++
+ js/checkbox-widget.js                            | 82 +++++++++---------------
+ js/dropdown-widget.js                            | 51 ++-------------
+ src/Plugin/facets/widget/DropdownWidget.php      |  1 +
+ src/Widget/WidgetPluginBase.php                  | 13 ++--
+ templates/facets-item-list--checkbox.html.twig   | 46 +++++++++++++
+ templates/facets-item-list--dropdown.html.twig   | 54 ++++++++++++++++
+ templates/facets-result-item--checkbox.html.twig | 18 ++++++
+ templates/facets-result-item--dropdown.html.twig | 18 ++++++
+ 9 files changed, 195 insertions(+), 102 deletions(-)
+ create mode 100644 templates/facets-item-list--checkbox.html.twig
+ create mode 100644 templates/facets-item-list--dropdown.html.twig
+ create mode 100644 templates/facets-result-item--checkbox.html.twig
+ create mode 100644 templates/facets-result-item--dropdown.html.twig
+
+diff --git a/facets.module b/facets.module
+index 90d8952..89f5246 100644
+--- a/facets.module
++++ b/facets.module
+@@ -52,6 +52,12 @@ function facets_theme($existing, $type, $theme, $path) {
+         'is_active' => FALSE,
+       ],
+     ],
++    'facets_result_item__checkbox' => [
++      'base hook' => 'facets_result_item',
++    ],
++    'facets_result_item__dropdown' => [
++      'base hook' => 'facets_result_item',
++    ],
+     'facets_item_list' => [
+       'variables' => [
+         'items' => [],
+@@ -61,8 +67,16 @@ function facets_theme($existing, $type, $theme, $path) {
+         'attributes' => [],
+         'empty' => NULL,
+         'context' => [],
++        'widget_config' => [],
++        'facet' => [],
+       ],
+     ],
++    'facets_item_list__checkbox' => [
++      'base hook' => 'facets_item_list',
++    ],
++    'facets_item_list__dropdown' => [
++      'base hook' => 'facets_item_list',
++    ],
+   ];
+ }
+ 
+diff --git a/js/checkbox-widget.js b/js/checkbox-widget.js
+index 154c54b..c628ebe 100644
+--- a/js/checkbox-widget.js
++++ b/js/checkbox-widget.js
+@@ -1,6 +1,6 @@
+ /**
+  * @file
+- * Transforms links into checkboxes.
++ * Checkboxes.
+  */
+ 
+ (function ($) {
+@@ -10,71 +10,51 @@
+   Drupal.facets = Drupal.facets || {};
+   Drupal.behaviors.facetsCheckboxWidget = {
+     attach: function (context, settings) {
+-      Drupal.facets.makeCheckboxes();
++      Drupal.facets.initCheckboxes();
+     }
+   };
+ 
+   /**
+-   * Turns all facet links into checkboxes.
++   * Init checkboxes.
+    */
+-  Drupal.facets.makeCheckboxes = function () {
++  Drupal.facets.initCheckboxes = function () {
+     // Find all checkbox facet links and give them a checkbox.
+-    var $links = $('.js-facets-checkbox-links .facet-item a');
+-    $links.once('facets-checkbox-transform').each(Drupal.facets.makeCheckbox);
++    var $checkboxes = $('.js-facets-checkbox-links .facet-item .facets-checkbox');
++    $checkboxes.once('facets-checkbox-init').each(Drupal.facets.initCheckbox);
+     // Set indeterminate value on parents having an active trail.
+     $('.facet-item--expanded.facet-item--active-trail > input').prop('indeterminate', true);
+   };
+ 
+   /**
+-   * Replace a link with a checked checkbox.
++   * Init checkbox.
+    */
+-  Drupal.facets.makeCheckbox = function () {
+-    var $link = $(this);
+-    var active = $link.hasClass('is-active');
+-    var description = $link.html();
+-    var href = $link.attr('href');
+-    var id = $link.data('drupal-facet-item-id');
+-
+-    var checkbox = $('<input type="checkbox" class="facets-checkbox">')
+-      .attr('id', id)
+-      .data($link.data())
+-      .data('facetsredir', href);
+-    var label = $('<label for="' + id + '">' + description + '</label>');
+-
+-    checkbox.on('change.facets', function (e) {
+-      Drupal.facets.disableFacet($link.parents('.js-facets-checkbox-links'));
++  Drupal.facets.initCheckbox = function () {
++    $(this).on('change.facets', function (e) {
++      // Drupal.facets.disableFacet($(this).parents('.js-facets-checkbox-links'));
+       window.location.href = $(this).data('facetsredir');
+     });
+-
+-    if (active) {
+-      checkbox.attr('checked', true);
+-      label.find('.js-facet-deactivate').remove();
+-    }
+-
+-    $link.before(checkbox).before(label).remove();
+-
+   };
+ 
+-  /**
+-   * Disable all facet checkboxes in the facet and apply a 'disabled' class.
+-   *
+-   * @param {object} $facet
+-   *   jQuery object of the facet.
+-   */
+-  Drupal.facets.disableFacet = function ($facet) {
+-    $facet.addClass('facets-disabled');
+-    $('input.facets-checkbox').click(Drupal.facets.preventDefault);
+-    $('input.facetapi-checkbox', $facet).attr('disabled', true);
+-  };
+-
+-  /**
+-   * Event listener for easy prevention of event propagation.
+-   *
+-   * @param {object} e
+-   *   Event.
+-   */
+-  Drupal.facets.preventDefault = function (e) {
+-    e.preventDefault();
+-  };
++  // /**
++  //  * Disable all facet checkboxes in the facet and apply a 'disabled' class.
++  //  *
++  //  * @param {object} $facet
++  //  *   jQuery object of the facet.
++  //  */
++  // Drupal.facets.disableFacet = function ($facet) {
++  //   $facet.addClass('facets-disabled');
++  //   $('input.facets-checkbox').click(Drupal.facets.preventDefault);
++  //   $('input.facets-checkbox', $facet).attr('disabled', true);
++  // };
++
++  // /**
++  //  * Event listener for easy prevention of event propagation.
++  //  *
++  //  * @param {object} e
++  //  *   Event.
++  //  */
++  // Drupal.facets.preventDefault = function (e) {
++  //   e.preventDefault();
++  // };
+ 
+ })(jQuery);
+diff --git a/js/dropdown-widget.js b/js/dropdown-widget.js
+index 5d599f1..7a8bf11 100644
+--- a/js/dropdown-widget.js
++++ b/js/dropdown-widget.js
+@@ -1,6 +1,6 @@
+ /**
+  * @file
+- * Transforms links into a dropdown list.
++ * Dropdown list.
+  */
+ 
+ (function ($) {
+@@ -10,7 +10,7 @@
+   Drupal.facets = Drupal.facets || {};
+   Drupal.behaviors.facetsDropdownWidget = {
+     attach: function (context, settings) {
+-      Drupal.facets.makeDropdown(context, settings);
++      Drupal.facets.initDropdown(context, settings);
+     }
+   };
+ 
+@@ -22,53 +22,12 @@
+    * @param {object} settings
+    *   Settings.
+    */
+-  Drupal.facets.makeDropdown = function (context, settings) {
+-    // Find all dropdown facet links and turn them into an option.
++  Drupal.facets.initDropdown = function (context, settings) {
+     $('.js-facets-dropdown-links').once('facets-dropdown-transform').each(function () {
+-      var $ul = $(this);
+-      var $links = $ul.find('.facet-item a');
+-      var $dropdown = $('<select class="facets-dropdown" />').data($ul.data());
+-
+-      var id = $(this).data('drupal-facet-id');
+-      var default_option_label = settings.facets.dropdown_widget[id]['facet-default-option-label'];
+-      // Add empty text option first.
+-      var $default_option = $('<option />')
+-        .attr('value', '')
+-        .text(default_option_label);
+-      $dropdown.append($default_option);
+-
+-      var has_active = false;
+-      $links.each(function () {
+-        var $link = $(this);
+-        var active = $link.hasClass('is-active');
+-        var $option = $('<option />')
+-          .attr('value', $link.attr('href'))
+-          .data($link.data());
+-        if (active) {
+-          has_active = true;
+-          // Set empty text value to this link to unselect facet.
+-          $default_option.attr('value', $link.attr('href'));
+-
+-          $option.attr('selected', 'selected');
+-          $link.find('.js-facet-deactivate').remove();
+-        }
+-        $option.html($link.text());
+-        $dropdown.append($option);
+-      });
+-
+-      // Go to the selected option when it's clicked.
+-      $dropdown.on('change.facets', function () {
++      // Go to the selected option when it's changed.
++      $(this).on('change.facets', function () {
+         window.location.href = $(this).val();
+       });
+-
+-      // Append empty text option.
+-      if (!has_active) {
+-        $default_option.attr('selected', 'selected');
+-      }
+-
+-      // Replace links with dropdown.
+-      $ul.after($dropdown).remove();
+-      Drupal.attachBehaviors($dropdown.parent()[0], Drupal.settings);
+     });
+   };
+ 
+diff --git a/src/Plugin/facets/widget/DropdownWidget.php b/src/Plugin/facets/widget/DropdownWidget.php
+index b2e2fa9..35e426d 100644
+--- a/src/Plugin/facets/widget/DropdownWidget.php
++++ b/src/Plugin/facets/widget/DropdownWidget.php
+@@ -32,6 +32,7 @@ class DropdownWidget extends WidgetPluginBase {
+   public function build(FacetInterface $facet) {
+     $build = parent::build($facet);
+     $build['#attributes']['class'][] = 'js-facets-dropdown-links';
++    $build['#widget_config'] = $this->getConfiguration();
+     $build['#attached']['drupalSettings']['facets']['dropdown_widget'][$facet->id()]['facet-default-option-label'] = $this->getConfiguration()['default_option_label'];
+     $build['#attached']['library'][] = 'facets/drupal.facets.dropdown-widget';
+     return $build;
+diff --git a/src/Widget/WidgetPluginBase.php b/src/Widget/WidgetPluginBase.php
+index 8959ce2..adf6714 100644
+--- a/src/Widget/WidgetPluginBase.php
++++ b/src/Widget/WidgetPluginBase.php
+@@ -63,6 +63,7 @@ abstract class WidgetPluginBase extends PluginBase implements WidgetPluginInterf
+     return [
+       '#theme' => $this->getFacetItemListThemeHook($facet),
+       '#items' => $items,
++      '#facet' => $facet->toArray(),
+       '#attributes' => [
+         'data-drupal-facet-id' => $facet->id(),
+         'data-drupal-facet-alias' => $facet->getUrlAlias(),
+@@ -158,7 +159,7 @@ abstract class WidgetPluginBase extends PluginBase implements WidgetPluginInterf
+    */
+   protected function buildListItems($facet, ResultInterface $result) {
+     $classes = ['facet-item'];
+-    $items = $this->prepareLink($result);
++    $items = $this->prepareLink($result, $facet->getWidget()['type']);
+ 
+     $children = $result->getChildren();
+     // Check if we need to expand this result.
+@@ -205,8 +206,10 @@ abstract class WidgetPluginBase extends PluginBase implements WidgetPluginInterf
+    * @return array
+    *   The item as a render array.
+    */
+-  protected function prepareLink(ResultInterface $result) {
+-    $item = $this->buildResultItem($result);
++  protected function prepareLink(ResultInterface $result, $widget_type = '') {
++    $item = $this->buildResultItem($result, $widget_type);
++    $item['#widget_type'] = $widget_type;
++
+ 
+     if (!is_null($result->getUrl())) {
+       $item = (new Link($item, $result->getUrl()))->toRenderable();
+@@ -224,10 +227,10 @@ abstract class WidgetPluginBase extends PluginBase implements WidgetPluginInterf
+    * @return array
+    *   The facet result item as a render array.
+    */
+-  protected function buildResultItem(ResultInterface $result) {
++  protected function buildResultItem(ResultInterface $result, $widget_type = '') {
+     $count = $result->getCount();
+     return [
+-      '#theme' => 'facets_result_item',
++      '#theme' => 'facets_result_item__' . $widget_type,
+       '#is_active' => $result->isActive(),
+       '#value' => $result->getDisplayValue(),
+       '#show_count' => $this->getConfiguration()['show_numbers'] && ($count !== NULL),
+diff --git a/templates/facets-item-list--checkbox.html.twig b/templates/facets-item-list--checkbox.html.twig
+new file mode 100644
+index 0000000..8d411f0
+--- /dev/null
++++ b/templates/facets-item-list--checkbox.html.twig
+@@ -0,0 +1,46 @@
++{#
++/**
++ * @file
++ * Default theme implementation for a facets item list.
++ *
++ * Available variables:
++ * - items: A list of items. Each item contains:
++ *   - attributes: HTML attributes to be applied to each list item.
++ *   - value: The content of the list element.
++ * - title: The title of the list.
++ * - list_type: The tag for list element ("ul" or "ol").
++ * - wrapper_attributes: HTML attributes to be applied to the list wrapper.
++ * - attributes: HTML attributes to be applied to the list.
++ * - empty: A message to display when there are no items. Allowed value is a
++ *   string or render array.
++ * - context: A list of contextual data associated with the list. May contain:
++ *   - list_style: The ID of the widget plugin this facet uses.
++ *
++ * @see facets_preprocess_facets_item_list()
++ *
++ * @ingroup themeable
++ */
++#}
++<div class="facets-widget- {{- context.list_style -}} ">
++  {% if context.list_style %}
++    {%- set attributes = attributes.addClass('item-list__' ~ context.list_style) %}
++  {% endif %}
++  {% if items or empty %}
++    {%- if title is not empty -%}
++      <h3>{{ title }}</h3>
++    {%- endif -%}
++
++    {%- if items -%}
++      <{{ list_type }}{{ attributes }}>
++        {%- for item in items -%}
++          <li{{ item.attributes }}>
++            <input type="checkbox" class="facets-checkbox"{{ item.value['#title']['#is_active'] ? ' checked' : '' }} id="{{ item.value['#attributes']['data-drupal-facet-item-id'] }}" data-drupal-facet-item-id={{ item.value['#attributes']['data-drupal-facet-item-id'] }} data-drupal-facet-item-value={{ item.value['#attributes']['data-drupal-facet-item-value'] }} data-facetsredir="{{ item.value['#url'] }}">
++            <label for="{{ item.value['#attributes']['data-drupal-facet-item-id'] }}">{{ item.value['#title'] }}</label>
++          </li>
++        {%- endfor -%}
++      </{{ list_type }}>
++    {%- else -%}
++      {{- empty -}}
++    {%- endif -%}
++  {%- endif %}
++</div>
+diff --git a/templates/facets-item-list--dropdown.html.twig b/templates/facets-item-list--dropdown.html.twig
+new file mode 100644
+index 0000000..3b617fe
+--- /dev/null
++++ b/templates/facets-item-list--dropdown.html.twig
+@@ -0,0 +1,54 @@
++{#
++/**
++ * @file
++ * Default theme implementation for a facets item list.
++ *
++ * Available variables:
++ * - items: A list of items. Each item contains:
++ *   - attributes: HTML attributes to be applied to each list item.
++ *   - value: The content of the list element.
++ * - facet: Facet converted to array.
++ * - widget_config: Widget configuration.
++ * - title: The title of the list.
++ * - list_type: The tag for list element ("ul" or "ol").
++ * - wrapper_attributes: HTML attributes to be applied to the list wrapper.
++ * - attributes: HTML attributes to be applied to the list.
++ * - empty: A message to display when there are no items. Allowed value is a
++ *   string or render array.
++ * - context: A list of contextual data associated with the list. May contain:
++ *   - list_style: The ID of the widget plugin this facet uses.
++ *
++ * @see facets_preprocess_facets_item_list()
++ *
++ * @ingroup themeable
++ */
++#}
++<div class="facets-widget- {{- context.list_style -}} ">
++  {% if context.list_style %}
++    {%- set attributes = attributes.addClass('item-list__' ~ context.list_style) %}
++  {% endif %}
++  {% if items or empty %}
++    {%- if title is not empty -%}
++      <h3>{{ title }}</h3>
++    {%- endif -%}
++    {%- if items -%}
++      <select {{ attributes.addClass('facets-dropdown') }}>
++        {% set default_option_value = '' %}
++        {% set items_tmp %}
++          {%- for item in items -%}
++            <option value="{{ item.value['#url'] }}"{{ item.value['#title']['#is_active'] ? ' selected' : '' }}>
++              {{ item.value['#title'] }}
++            </option>
++            {% if item.value['#title']['#is_active'] %}{% set default_option_value = item.value['#url'] %}{% endif %}
++          {%- endfor -%}
++        {% endset %}
++        <option value="{{ default_option_value }}">
++          {{ widget_config['default_option_label'] }}
++        </<option>
++        {{ items_tmp }}
++      </select>
++    {%- else -%}
++      {{- empty -}}
++    {%- endif -%}
++  {%- endif %}
++</div>
+diff --git a/templates/facets-result-item--checkbox.html.twig b/templates/facets-result-item--checkbox.html.twig
+new file mode 100644
+index 0000000..4d64cc3
+--- /dev/null
++++ b/templates/facets-result-item--checkbox.html.twig
+@@ -0,0 +1,18 @@
++{#
++/**
++ * @file
++ * Default theme implementation of a facet result item.
++ *
++ * Available variables:
++ * - value: The item value.
++ * - show_count: If this facet provides count.
++ * - count: The amount of results.
++ * - is_active: The item is active.
++ *
++ * @ingroup themeable
++ */
++#}
++<span class="facet-item__value">{{ value }}</span>
++{% if show_count %}
++  <span class="facet-item__count">({{ count }})</span>
++{% endif %}
+diff --git a/templates/facets-result-item--dropdown.html.twig b/templates/facets-result-item--dropdown.html.twig
+new file mode 100644
+index 0000000..4d64cc3
+--- /dev/null
++++ b/templates/facets-result-item--dropdown.html.twig
+@@ -0,0 +1,18 @@
++{#
++/**
++ * @file
++ * Default theme implementation of a facet result item.
++ *
++ * Available variables:
++ * - value: The item value.
++ * - show_count: If this facet provides count.
++ * - count: The amount of results.
++ * - is_active: The item is active.
++ *
++ * @ingroup themeable
++ */
++#}
++<span class="facet-item__value">{{ value }}</span>
++{% if show_count %}
++  <span class="facet-item__count">({{ count }})</span>
++{% endif %}
+-- 
+2.10.1
+
