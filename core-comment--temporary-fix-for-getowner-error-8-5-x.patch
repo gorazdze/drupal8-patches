@@ -1,0 +1,78 @@
+From 52091e4aeb4c54ab2369e35f0fbe26650aed142c Mon Sep 17 00:00:00 2001
+From: gorazdze <gorazd@dinamico.si>
+Date: Sun, 29 Jul 2018 16:07:40 +0200
+Subject: [PATCH] =?UTF-8?q?Temporary=20fix=20for=20error=20=E2=80=9CCall?=
+ =?UTF-8?q?=20to=20a=20member=20function=20getOwner()=20on=20null=20in=20t?=
+ =?UTF-8?q?emplate=5Fpreprocess=5Fcomment()=20...=E2=80=9D?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ core/modules/comment/comment.module | 49 ++++++++++++++++-------------
+ 1 file changed, 27 insertions(+), 22 deletions(-)
+
+diff --git a/core/modules/comment/comment.module b/core/modules/comment/comment.module
+index 4122e3922d..22148fa825 100644
+--- a/core/modules/comment/comment.module
++++ b/core/modules/comment/comment.module
+@@ -674,29 +674,34 @@ function template_preprocess_comment(&$variables) {
+   if ($comment->hasParentComment()) {
+     // Fetch and store the parent comment information for use in templates.
+     $comment_parent = $comment->getParentComment();
+-    $account_parent = $comment_parent->getOwner();
+-    $variables['parent_comment'] = $comment_parent;
+-    $username = [
+-      '#theme' => 'username',
+-      '#account' => $account_parent,
+-    ];
+-    $variables['parent_author'] = \Drupal::service('renderer')->render($username);
+-    $variables['parent_created'] = format_date($comment_parent->getCreatedTime());
+-    // Avoid calling format_date() twice on the same timestamp.
+-    if ($comment_parent->getChangedTime() == $comment_parent->getCreatedTime()) {
+-      $variables['parent_changed'] = $variables['parent_created'];
+-    }
+-    else {
+-      $variables['parent_changed'] = format_date($comment_parent->getChangedTime());
++
++    // Temporary fix for error “Call to a member function getOwner() on null
++    // in template_preprocess_comment() ...” Check if parent comment exists.
++    if (isset($comment_parent)) {
++      $account_parent = $comment_parent->getOwner();
++      $variables['parent_comment'] = $comment_parent;
++      $username = [
++        '#theme' => 'username',
++        '#account' => $account_parent,
++      ];
++      $variables['parent_author'] = \Drupal::service('renderer')->render($username);
++      $variables['parent_created'] = format_date($comment_parent->getCreatedTime());
++      // Avoid calling format_date() twice on the same timestamp.
++      if ($comment_parent->getChangedTime() == $comment_parent->getCreatedTime()) {
++        $variables['parent_changed'] = $variables['parent_created'];
++      }
++      else {
++        $variables['parent_changed'] = format_date($comment_parent->getChangedTime());
++      }
++      $permalink_uri_parent = $comment_parent->permalink();
++      $attributes = $permalink_uri_parent->getOption('attributes') ?: [];
++      $attributes += ['class' => ['permalink'], 'rel' => 'bookmark'];
++      $permalink_uri_parent->setOption('attributes', $attributes);
++      $variables['parent_title'] = \Drupal::l($comment_parent->getSubject(), $permalink_uri_parent);
++      $variables['parent_permalink'] = \Drupal::l(t('Parent permalink'), $permalink_uri_parent);
++      $variables['parent'] = t('In reply to @parent_title by @parent_username',
++          ['@parent_username' => $variables['parent_author'], '@parent_title' => $variables['parent_title']]);
+     }
+-    $permalink_uri_parent = $comment_parent->permalink();
+-    $attributes = $permalink_uri_parent->getOption('attributes') ?: [];
+-    $attributes += ['class' => ['permalink'], 'rel' => 'bookmark'];
+-    $permalink_uri_parent->setOption('attributes', $attributes);
+-    $variables['parent_title'] = \Drupal::l($comment_parent->getSubject(), $permalink_uri_parent);
+-    $variables['parent_permalink'] = \Drupal::l(t('Parent permalink'), $permalink_uri_parent);
+-    $variables['parent'] = t('In reply to @parent_title by @parent_username',
+-        ['@parent_username' => $variables['parent_author'], '@parent_title' => $variables['parent_title']]);
+   }
+   else {
+     $variables['parent_comment'] = '';
+-- 
+2.17.1
+
